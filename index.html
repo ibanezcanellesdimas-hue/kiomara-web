@@ -929,6 +929,7 @@ a { color: inherit; }
 }
 /* Minijuego */
 .mj-zona { display: grid; gap: 28px; }
+.mj-cerrado #mj-dentro { display: none !important; }
 .cuenta-barra { margin-top: 18px; background: #fff; border: 2px dashed var(--line); border-radius: 16px; padding: 14px 18px; display: grid; gap: 14px; }
 .cb-fila { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; justify-content: space-between; }
 .cb-txt { margin: 0; color: var(--muted); max-width: 60ch; text-align: left !important; hyphens: none !important; }
@@ -4978,23 +4979,28 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
   function normalizarUsuario(t) {
     return String(t || '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, '.').replace(/[^a-z0-9._-]/g, '');
   }
+  var mjSeccion = document.querySelector('[data-view="minijuego"]');
+  function cerrarJuego(cerrado) { if (mjSeccion) mjSeccion.classList.toggle('mj-cerrado', cerrado); }
   function iniciarCuentas() {
     if (!barra || window.claude) return;
+    // En la web publicada solo se puede jugar con una cuenta aprobada
+    cerrarJuego(true); barra.hidden = false;
+    barra.innerHTML = '<p class="cb-txt">Cargando…</p>';
     var sc = document.createElement('script');
     sc.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js';
+    sc.onerror = function () { barra.innerHTML = '<p class="cb-txt">No se ha podido conectar. Recarga la página para volver a intentarlo.</p>'; };
     sc.onload = function () {
       try { sb = window.supabase.createClient(SB_URL, SB_CLAVE); } catch (e) { return; }
-      barra.hidden = false;
       sb.auth.getSession().then(function (r) { cargarPerfil(r.data && r.data.session); });
     };
     document.head.appendChild(sc);
   }
   function cargarPerfil(sesion) {
-    perfil = null; nubeDoc = null;
+    perfil = null; nubeDoc = null; cerrarJuego(true);
     if (!sesion) { pintarBarra(); return; }
     sb.from('perfiles').select('id, usuario, estado, es_admin').eq('id', sesion.user.id).maybeSingle().then(function (r) {
       perfil = r.data || null;
-      if (perfil && perfil.estado === 'aprobado') conectarCuenta();
+      if (perfil && perfil.estado === 'aprobado') { conectarCuenta(); cerrarJuego(false); }
       pintarBarra();
     });
   }
@@ -5011,7 +5017,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     barra.innerHTML = '';
     var fila = el('div', 'cb-fila');
     if (!perfil && !modo) {
-      fila.appendChild(el('p', 'cb-txt', 'Ahora tus cromos se guardan solo en este navegador. Con una cuenta no los pierdes al cambiar de móvil.'));
+      fila.appendChild(el('p', 'cb-txt', 'Para jugar y guardar tus cromos necesitas una cuenta del grupo. Si aún no tienes, pídela y el kraal la aprobará.'));
       var bs = el('div', 'cb-botones');
       bs.appendChild(boton('Entrar', 'btn--marino', function () { pintarBarra('entrar'); }));
       bs.appendChild(boton('Pedir cuenta', 'cb-sec', function () { pintarBarra('registro'); }));
@@ -5056,12 +5062,12 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
       setTimeout(function () { iu.focus(); }, 30);
     } else {
       var t = perfil.estado === 'aprobado' ? 'Hola, ' + perfil.usuario + '. Tus cromos se guardan en tu cuenta.'
-        : perfil.estado === 'pendiente' ? 'Hola, ' + perfil.usuario + '. Tu cuenta está pendiente de que el kraal la apruebe. Mientras, tus cromos se guardan en este navegador.'
+        : perfil.estado === 'pendiente' ? 'Hola, ' + perfil.usuario + '. Tu cuenta está pendiente de que el kraal la apruebe. Cuando la apruebe podrás jugar.'
         : 'Hola, ' + perfil.usuario + '. Tu solicitud no ha sido aceptada. Si crees que es un error, habla con tus monitores.';
       fila.appendChild(el('p', 'cb-txt' + (perfil.estado === 'aprobado' ? ' cb-ok' : ''), t));
       var bs3 = el('div', 'cb-botones');
       if (perfil.es_admin) bs3.appendChild(boton('Solicitudes', 'btn--marino', function () { abrirAdmin(); }));
-      bs3.appendChild(boton('Salir', 'cb-sec', function () { sb.auth.signOut().then(function () { perfil = null; nubeDoc = null; pintarBarra(); }); }));
+      bs3.appendChild(boton('Salir', 'cb-sec', function () { sb.auth.signOut().then(function () { perfil = null; nubeDoc = null; cerrarJuego(true); pintarBarra(); }); }));
       fila.appendChild(bs3);
     }
     barra.appendChild(fila);
