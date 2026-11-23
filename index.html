@@ -929,7 +929,24 @@ a { color: inherit; }
 }
 /* Minijuego */
 .mj-zona { display: grid; gap: 28px; }
-.mj-cerrado .mj-zona { display: none !important; }
+.mj-zona { position: relative; }
+.mj-cerrado .mj-zona { max-height: 760px; overflow: hidden; }
+.mj-cerrado .mj-zona > :not(.mj-capa) { filter: blur(3px); opacity: .55; pointer-events: none; user-select: none; }
+.mj-capa { position: absolute; inset: -8px -16px 0; z-index: 5; display: grid; justify-items: center; align-items: start; padding: 36px 16px; background: linear-gradient(180deg, rgba(27,42,74,.72), rgba(27,42,74,.9) 70%); backdrop-filter: blur(2px); border-radius: 24px; }
+.mj-capa[hidden] { display: none; }
+.mj-tarjeta { position: relative; width: min(100%, 400px); background: #fff; border-radius: 22px; padding: 62px 26px 22px; box-shadow: 0 24px 50px rgba(0,0,0,.4); text-align: center; display: grid; gap: 12px; margin-top: 40px; border: 3px solid #fff; outline: 2px dashed var(--line); outline-offset: -10px; }
+.mjt-cab { position: absolute; top: -58px; left: 50%; transform: translateX(-50%); width: 112px; height: 112px; border-radius: 50%; background: #fff; display: grid; place-items: center; box-shadow: 0 10px 20px rgba(0,0,0,.25); }
+.mjt-cab img { width: 92px; height: 92px; object-fit: contain; }
+.mj-tarjeta h2 { margin: 0; font-size: clamp(1.4rem, 3.4vw, 1.75rem); color: var(--marino) !important; }
+.mjt-txt { margin: 0; color: var(--muted); text-align: center !important; hyphens: none !important; }
+.mjt-form { display: grid; gap: 10px; text-align: left; margin-top: 4px; }
+.mjt-campo { display: grid; gap: 4px; font-weight: 700; font-size: .92rem; color: var(--marino); }
+.mjt-campo input { font: inherit; font-weight: 400; padding: 11px 13px; border: 2px solid var(--line); border-radius: 12px; width: 100%; background: #fbfbf7; }
+.mjt-campo input:focus { outline: none; border-color: var(--marino); background: #fff; }
+.mjt-ok { width: 100%; justify-content: center; margin-top: 2px; }
+.mjt-botones { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.mjt-cambio { margin: 2px 0 0; font-size: .92rem; color: var(--muted); text-align: center !important; }
+.mjt-enlace { font: inherit; font-weight: 700; color: var(--marino); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
 .aviso-galleta { position: fixed; left: 16px; bottom: 16px; z-index: 9000; max-width: 380px; display: flex; gap: 12px; align-items: flex-start; background: #fff; border: 2px solid var(--marino); border-radius: 18px; padding: 14px 16px; box-shadow: 0 14px 30px rgba(0,0,0,.25); animation: galleta-entra .4s ease; transition: opacity .3s, transform .3s; }
 .aviso-galleta.fuera { opacity: 0; transform: translateY(20px); }
 .aviso-galleta img { width: 64px; height: 64px; object-fit: contain; flex: none; }
@@ -2888,6 +2905,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     <div class="cuenta-barra" id="cuenta-barra" hidden></div>
   </div>
   <div class="wrap mj-zona" style="padding-bottom:64px">
+    <div class="mj-capa" id="mj-capa" hidden><div class="mj-tarjeta" id="mj-tarjeta" role="dialog" aria-label="Entrar en el minijuego"></div></div>
     <div id="mj-dentro">
       <div class="stack-lg">
         <div class="stack"><span class="eyebrow">Esta semana</span>
@@ -4992,15 +5010,17 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     return String(t || '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, '.').replace(/[^a-z0-9._-]/g, '');
   }
   var mjSeccion = document.querySelector('[data-view="minijuego"]');
-  function cerrarJuego(cerrado) { if (mjSeccion) mjSeccion.classList.toggle('mj-cerrado', cerrado); }
+  function cerrarJuego(cerrado) {
+    if (!mjSeccion) return; mjSeccion.classList.toggle('mj-cerrado', cerrado);
+    var z = mjSeccion.querySelector('.mj-zona'); if (z) [].forEach.call(z.children, function (c) { if (c.id !== 'mj-capa') { if (cerrado) c.setAttribute('inert', ''); else c.removeAttribute('inert'); } });
+  }
   function iniciarCuentas() {
     if (!barra || window.claude) return;
     // En la web publicada solo se puede jugar con una cuenta aprobada
-    cerrarJuego(true); barra.hidden = false;
-    barra.innerHTML = '<p class="cb-txt">Cargando…</p>';
+    cerrarJuego(true); capa.hidden = false; pintarTarjeta('cargando');
     var sc = document.createElement('script');
     sc.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js';
-    sc.onerror = function () { barra.innerHTML = '<p class="cb-txt">No se ha podido conectar. Recarga la página para volver a intentarlo.</p>'; };
+    sc.onerror = function () { pintarTarjeta('error'); };
     sc.onload = function () {
       try { sb = window.supabase.createClient(SB_URL, SB_CLAVE); } catch (e) { return; }
       sb.auth.getSession().then(function (r) { cargarPerfil(r.data && r.data.session); });
@@ -5025,63 +5045,81 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     });
   }
   function boton(txt, cls, fn) { var b = el('button', 'btn btn-sm ' + (cls || ''), txt); b.type = 'button'; b.addEventListener('click', fn); return b; }
+  var capa = document.getElementById('mj-capa'), tarjeta = document.getElementById('mj-tarjeta');
+  function campo(txt, tipo, auto, extra) {
+    var l = el('label', 'mjt-campo'); l.appendChild(el('span', '', txt));
+    var i = el('input'); i.type = tipo; i.autocomplete = auto; if (extra) extra(i); l.appendChild(i); return [l, i];
+  }
+  function pintarTarjeta(modo, aviso) {
+    tarjeta.innerHTML = '';
+    var cab = el('div', 'mjt-cab');
+    var img = el('img'); img.src = 'caracol.webp'; img.alt = ''; img.width = 96; img.height = 96; cab.appendChild(img);
+    tarjeta.appendChild(cab);
+    if (modo === 'cargando' || modo === 'error') {
+      tarjeta.appendChild(el('h2', '', modo === 'error' ? 'Ups…' : 'Un momento…'));
+      tarjeta.appendChild(el('p', 'mjt-txt', modo === 'error' ? 'No se ha podido conectar. Recarga la página para volver a intentarlo.' : 'Preparando el minijuego.'));
+      return;
+    }
+    if (perfil) {
+      var pend = perfil.estado === 'pendiente';
+      tarjeta.appendChild(el('h2', '', pend ? '¡Solicitud enviada!' : 'Cuenta no aceptada'));
+      tarjeta.appendChild(el('p', 'mjt-txt', pend ? 'Hola, ' + perfil.usuario + '. El kraal tiene que aprobar tu cuenta. En cuanto lo haga, podrás jugar y guardar tus cromos.'
+        : 'Hola, ' + perfil.usuario + '. Tu solicitud no ha sido aceptada. Si crees que es un error, habla con tus monitores.'));
+      var bs = el('div', 'mjt-botones');
+      if (pend) bs.appendChild(boton('Comprobar de nuevo', 'btn--marino', function () { sb.auth.getSession().then(function (r) { cargarPerfil(r.data && r.data.session); }); }));
+      bs.appendChild(boton('Salir', 'cb-sec', function () { sb.auth.signOut().then(function () { perfil = null; nubeDoc = null; cerrarJuego(true); pintarBarra(); }); }));
+      tarjeta.appendChild(bs);
+      return;
+    }
+    var reg = modo === 'registro';
+    tarjeta.appendChild(el('h2', '', reg ? 'Pide tu cuenta' : 'Entra para jugar'));
+    tarjeta.appendChild(el('p', 'mjt-txt', reg ? 'Es tu primera vez: elige un usuario y una contraseña. El kraal revisará tu solicitud.' : 'Pon tu usuario y tu contraseña para jugar y guardar tus cromos.'));
+    var f = el('form', 'mjt-form'); f.noValidate = true;
+    var cu = campo('Usuario', 'text', 'username', function (i) { i.maxLength = 20; i.placeholder = reg ? 'por ejemplo, lucia.g' : ''; i.autocapitalize = 'none'; i.spellcheck = false; }); f.appendChild(cu[0]);
+    var cc = campo('Contraseña', 'password', reg ? 'new-password' : 'current-password'); f.appendChild(cc[0]);
+    var cc2 = reg ? campo('Repite la contraseña', 'password', 'new-password') : null; if (cc2) f.appendChild(cc2[0]);
+    var msg = el('p', 'cb-msg', aviso || ''); msg.setAttribute('aria-live', 'polite'); f.appendChild(msg);
+    var ok = el('button', 'btn btn--marino mjt-ok', reg ? 'Enviar solicitud' : 'Entrar'); ok.type = 'submit'; f.appendChild(ok);
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var u = normalizarUsuario(cu[1].value), c = cc[1].value;
+      if (!/^[a-z0-9._-]{3,20}$/.test(u)) { msg.textContent = 'El usuario debe tener entre 3 y 20 letras o números, sin espacios.'; return; }
+      if (c.length < 6) { msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
+      if (reg && cc2[1].value !== c) { msg.textContent = 'Las contraseñas no coinciden.'; return; }
+      ok.disabled = true; msg.textContent = reg ? 'Enviando…' : 'Entrando…';
+      var pet = reg ? sb.auth.signUp({ email: u + SB_DOMINIO, password: c, options: { data: { usuario: u } } })
+                    : sb.auth.signInWithPassword({ email: u + SB_DOMINIO, password: c });
+      pet.then(function (r) {
+        ok.disabled = false;
+        if (r.error) {
+          var m = String(r.error.message || '');
+          msg.textContent = /already|registered|exists/i.test(m) ? 'Ese usuario ya existe. Prueba con otro.'
+            : /invalid login|credentials/i.test(m) ? 'Usuario o contraseña incorrectos.'
+            : /rate|too many/i.test(m) ? 'Demasiados intentos. Espera un poco y vuelve a probar.'
+            : 'No se ha podido. Inténtalo de nuevo.';
+          return;
+        }
+        cargarPerfil(r.data && r.data.session);
+      });
+    });
+    tarjeta.appendChild(f);
+    var cambio = el('p', 'mjt-cambio');
+    cambio.appendChild(document.createTextNode(reg ? '¿Ya tienes cuenta? ' : '¿Es tu primera vez? '));
+    var a = el('button', 'mjt-enlace', reg ? 'Entra' : 'Pide tu cuenta'); a.type = 'button';
+    a.addEventListener('click', function () { pintarTarjeta(reg ? 'entrar' : 'registro'); });
+    cambio.appendChild(a); tarjeta.appendChild(cambio);
+  }
   function pintarBarra(modo, aviso) {
+    var dentro = perfil && perfil.estado === 'aprobado';
+    capa.hidden = dentro; barra.hidden = !dentro;
+    if (!dentro) { pintarTarjeta(modo, aviso); return; }
     barra.innerHTML = '';
     var fila = el('div', 'cb-fila');
-    if (!perfil && !modo) {
-      fila.appendChild(el('p', 'cb-txt', 'Para jugar y guardar tus cromos necesitas una cuenta del grupo. Si aún no tienes, pídela y el kraal la aprobará.'));
-      var bs = el('div', 'cb-botones');
-      bs.appendChild(boton('Entrar', 'btn--marino', function () { pintarBarra('entrar'); }));
-      bs.appendChild(boton('Pedir cuenta', 'cb-sec', function () { pintarBarra('registro'); }));
-      fila.appendChild(bs);
-    } else if (!perfil) {
-      var reg = modo === 'registro';
-      var f = el('form', 'cb-form'); f.noValidate = true;
-      f.appendChild(el('h3', '', reg ? 'Pedir cuenta' : 'Entrar en tu cuenta'));
-      if (reg) f.appendChild(el('p', 'cb-txt', 'Elige un nombre de usuario y una contraseña. El kraal revisará tu solicitud y, cuando la apruebe, tus cromos se guardarán en tu cuenta.'));
-      var lu = el('label', 'campo', 'Usuario'); var iu = el('input'); iu.name = 'usuario'; iu.autocomplete = 'username'; iu.maxLength = 20; iu.placeholder = 'por ejemplo, lucia.g'; lu.appendChild(iu); f.appendChild(lu);
-      var lc = el('label', 'campo', 'Contraseña'); var ic = el('input'); ic.type = 'password'; ic.name = 'clave'; ic.autocomplete = reg ? 'new-password' : 'current-password'; lc.appendChild(ic); f.appendChild(lc);
-      var ic2 = null;
-      if (reg) { var lc2 = el('label', 'campo', 'Repite la contraseña'); ic2 = el('input'); ic2.type = 'password'; ic2.autocomplete = 'new-password'; lc2.appendChild(ic2); f.appendChild(lc2); }
-      var msg = el('p', 'cb-msg', aviso || ''); msg.setAttribute('aria-live', 'polite'); f.appendChild(msg);
-      var bs2 = el('div', 'cb-botones');
-      var ok = el('button', 'btn btn-sm btn--marino', reg ? 'Enviar solicitud' : 'Entrar'); ok.type = 'submit'; bs2.appendChild(ok);
-      bs2.appendChild(boton('Cancelar', 'cb-sec', function () { pintarBarra(); }));
-      f.appendChild(bs2);
-      f.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var u = normalizarUsuario(iu.value), c = ic.value;
-        if (!/^[a-z0-9._-]{3,20}$/.test(u)) { msg.textContent = 'El usuario debe tener entre 3 y 20 letras o números, sin espacios.'; return; }
-        if (c.length < 6) { msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
-        if (reg && ic2.value !== c) { msg.textContent = 'Las contraseñas no coinciden.'; return; }
-        ok.disabled = true; msg.textContent = reg ? 'Enviando…' : 'Entrando…';
-        var pet = reg ? sb.auth.signUp({ email: u + SB_DOMINIO, password: c, options: { data: { usuario: u } } })
-                      : sb.auth.signInWithPassword({ email: u + SB_DOMINIO, password: c });
-        pet.then(function (r) {
-          ok.disabled = false;
-          if (r.error) {
-            var m = String(r.error.message || '');
-            msg.textContent = /already|registered|exists/i.test(m) ? 'Ese usuario ya existe. Prueba con otro.'
-              : /invalid login|credentials/i.test(m) ? 'Usuario o contraseña incorrectos.'
-              : /rate|too many/i.test(m) ? 'Demasiados intentos. Espera un poco y vuelve a probar.'
-              : 'No se ha podido. Inténtalo de nuevo.';
-            return;
-          }
-          cargarPerfil(r.data && r.data.session);
-        });
-      });
-      fila.appendChild(f);
-      setTimeout(function () { iu.focus(); }, 30);
-    } else {
-      var t = perfil.estado === 'aprobado' ? 'Hola, ' + perfil.usuario + '. Tus cromos se guardan en tu cuenta.'
-        : perfil.estado === 'pendiente' ? 'Hola, ' + perfil.usuario + '. Tu cuenta está pendiente de que el kraal la apruebe. Cuando la apruebe podrás jugar.'
-        : 'Hola, ' + perfil.usuario + '. Tu solicitud no ha sido aceptada. Si crees que es un error, habla con tus monitores.';
-      fila.appendChild(el('p', 'cb-txt' + (perfil.estado === 'aprobado' ? ' cb-ok' : ''), t));
-      var bs3 = el('div', 'cb-botones');
-      if (perfil.es_admin) bs3.appendChild(boton('Solicitudes', 'btn--marino', function () { abrirAdmin(); }));
-      bs3.appendChild(boton('Salir', 'cb-sec', function () { sb.auth.signOut().then(function () { perfil = null; nubeDoc = null; cerrarJuego(true); pintarBarra(); }); }));
-      fila.appendChild(bs3);
-    }
+    fila.appendChild(el('p', 'cb-txt cb-ok', 'Hola, ' + perfil.usuario + '. Tus cromos se guardan en tu cuenta.'));
+    var bs3 = el('div', 'cb-botones');
+    if (perfil.es_admin) bs3.appendChild(boton('Solicitudes', 'btn--marino', function () { abrirAdmin(); }));
+    bs3.appendChild(boton('Salir', 'cb-sec', function () { sb.auth.signOut().then(function () { perfil = null; nubeDoc = null; cerrarJuego(true); pintarBarra(); }); }));
+    fila.appendChild(bs3);
     barra.appendChild(fila);
     if (modo === 'admin') barra.appendChild(panelAdmin);
   }
