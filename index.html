@@ -5668,7 +5668,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
   function mostrar() {
     var a = document.createElement('div'); a.className = 'aviso-galleta'; a.setAttribute('role', 'region'); a.setAttribute('aria-label', 'Aviso sobre cookies');
     // Cuando tengamos el caracol con la galleta, cambiar la imagen aquí
-    a.innerHTML = '<img src="caracol.webp" alt="" width="64" height="64"><div><p><strong>¿Una galleta?</strong> Esta web solo guarda en tu navegador lo necesario para funcionar, como tus cromos y tu sesión. Sin publicidad ni seguimiento. <a href="#cookies">Más información</a></p><button type="button" class="btn btn-sm btn--marino">Entendido</button></div>';
+    a.innerHTML = '<img src="caracol.webp" alt="" width="64" height="64"><div><p><strong>¿Una cookie?</strong> Esta web solo guarda en tu navegador lo necesario para funcionar, como tus cromos y tu sesión. Sin publicidad ni seguimiento. <a href="#cookies">Más información</a></p><button type="button" class="btn btn-sm btn--marino">Entendido</button></div>';
     a.querySelector('button').addEventListener('click', function () { try { localStorage.setItem(CLAVE, '1'); } catch (e) {} a.classList.add('fuera'); setTimeout(function () { a.remove(); }, 300); });
     a.querySelector('a').addEventListener('click', function () { try { localStorage.setItem(CLAVE, '1'); } catch (e) {} a.remove(); });
     document.body.appendChild(a);
