@@ -1,5 +1,5 @@
 <!doctype html><html lang="es"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><meta name="robots" content="noindex, nofollow"><style>html.bloq body>*:not(#puerta){display:none!important}#puerta{position:fixed;inset:0;display:grid;place-items:center;background:#1b2a4a;z-index:99999;font-family:system-ui,sans-serif;padding:16px}#puerta form{background:#fff;border-radius:18px;padding:28px 24px;width:min(100%,340px);display:grid;gap:12px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,.35)}#puerta h1{margin:0;font-size:1.3rem;color:#1b2a4a}#puerta p{margin:0;color:#555;font-size:.95rem;text-align:center!important;hyphens:none!important}#puerta input{font:inherit;padding:12px;border:2px solid #ccd;border-radius:10px}#puerta button{font:inherit;font-weight:700;padding:12px;border:0;border-radius:10px;background:#1b2a4a;color:#fff;cursor:pointer}#puerta .mal{color:#c0392b;font-size:.9rem;min-height:1.2em}</style>
-<script>(function(){var H='eced6ac12684ee8d989106372c393d3fbbc3dba057113b594f33773e804a053e',K='kiomara-puerta';var ok=false;try{ok=localStorage.getItem(K)===H}catch(e){}if(ok)return;document.documentElement.classList.add('bloq');document.addEventListener('DOMContentLoaded',function(){var d=document.createElement('div');d.id='puerta';d.innerHTML='<form><h1>Grupo Scout Kiomara</h1><p>Web en preparación. Introduce la contraseña.</p><input type="password" autocomplete="current-password" aria-label="Contraseña" required><button>Entrar</button><div class="mal" aria-live="polite"></div></form>';document.body.prepend(d);var f=d.querySelector('form'),i=d.querySelector('input'),m=d.querySelector('.mal');i.focus();f.addEventListener('submit',function(e){e.preventDefault();crypto.subtle.digest('SHA-256',new TextEncoder().encode(i.value)).then(function(b){var h=Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('');if(h===H){try{localStorage.setItem(K,H)}catch(e){}document.documentElement.classList.remove('bloq');d.remove()}else{m.textContent='Contraseña incorrecta';i.select()}})})})})();</script></head><body>
+<script>(function(){if(!/(^|\.)github\.io$|(^|\.)gskiomara\.es$/.test(location.hostname))return;var H='eced6ac12684ee8d989106372c393d3fbbc3dba057113b594f33773e804a053e',K='kiomara-puerta';var ok=false;try{ok=localStorage.getItem(K)===H}catch(e){}if(ok)return;document.documentElement.classList.add('bloq');document.addEventListener('DOMContentLoaded',function(){var d=document.createElement('div');d.id='puerta';d.innerHTML='<form><h1>Grupo Scout Kiomara</h1><p>Web en preparación. Introduce la contraseña.</p><input type="password" autocomplete="current-password" aria-label="Contraseña" required><button>Entrar</button><div class="mal" aria-live="polite"></div></form>';document.body.prepend(d);var f=d.querySelector('form'),i=d.querySelector('input'),m=d.querySelector('.mal');i.focus();f.addEventListener('submit',function(e){e.preventDefault();crypto.subtle.digest('SHA-256',new TextEncoder().encode(i.value)).then(function(b){var h=Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('');if(h===H){try{localStorage.setItem(K,H)}catch(e){}document.documentElement.classList.remove('bloq');d.remove()}else{m.textContent='Contraseña incorrecta';i.select()}})})})})();</script></head><body>
 <title>Grupo Scout Kiomara</title>
 <script>document.documentElement.lang = "es";</script>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -929,6 +929,21 @@ a { color: inherit; }
 }
 /* Minijuego */
 .mj-zona { display: grid; gap: 28px; }
+.cuenta-barra { margin-top: 18px; background: #fff; border: 2px dashed var(--line); border-radius: 16px; padding: 14px 18px; display: grid; gap: 14px; }
+.cb-fila { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; justify-content: space-between; }
+.cb-txt { margin: 0; color: var(--muted); max-width: 60ch; text-align: left !important; hyphens: none !important; }
+.cb-ok { color: var(--oliva); font-weight: 700; }
+.cb-botones { display: flex; flex-wrap: wrap; gap: 8px; }
+.cb-sec { background: #fff !important; color: var(--marino) !important; border: 2px solid var(--marino) !important; }
+.cb-form { display: grid; gap: 10px; width: min(100%, 380px); }
+.cb-form h3 { margin: 0; }
+.cb-form input { font: inherit; padding: 10px 12px; border: 2px solid var(--line); border-radius: 10px; width: 100%; }
+.cb-msg { margin: 0; min-height: 1.2em; color: var(--pioneros); font-size: .92rem; }
+.cb-admin { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+.cb-admin h4 { margin: 8px 0 0; }
+.cb-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.cb-lista li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; background: var(--surface); border-radius: 10px; }
+.cb-usuario { font-weight: 700; }
 #mj-dentro { display: grid; gap: 56px; }
 #mj-dentro[hidden] { display: none; }
 .mj-cabecera { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px; }
@@ -2862,6 +2877,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     <span class="eyebrow">Minijuego</span>
     <h1>Resuelve y colecciona</h1>
     <p class="lead">Cada semana, un minijuego nuevo. Si lo resuelves, ganas su cromo y se guarda en tu colección.</p>
+    <div class="cuenta-barra" id="cuenta-barra" hidden></div>
   </div>
   <div class="wrap mj-zona" style="padding-bottom:64px">
     <div id="mj-dentro">
@@ -3644,6 +3660,11 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     }).then(function (snap) {
       if (!snap) return;
       var c = {}; try { c = snap.exists ? JSON.parse((snap.data() || {}).claves || '{}') : {}; } catch (e) {}
+      aplicarNube(c);
+    }).catch(function () {});
+  }
+  function aplicarNube(c) {
+    {
       // Se juntan lo de la cuenta y lo de este navegador, sin perder nada de ninguno
       var sem = c[GUARDADO] || {}, crom = c[GUARDADO_CROMOS] || {};
       var antes = JSON.stringify([coleccion, conseguidos, diarioFecha]);
@@ -3660,7 +3681,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
         if (typeof pintarDiario === 'function') pintarDiario();
       }
       subirNube();
-    }).catch(function () {});
+    }
   }
   function comprobarLocal(r, resp) {
     if (conseguidos[r.id]) return { resultado: 'bien' };
@@ -4948,6 +4969,131 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     pintarDiario();
   }
   conectarNube();
+
+  // ---- Cuentas del minijuego (solo en la web publicada, no dentro de Claude) ----
+  // Cada chaval pide cuenta con usuario y contraseña; el kraal la aprueba y sus cromos se guardan en su cuenta.
+  var SB_URL = 'https://uoykpdkacurkfgibvrap.supabase.co', SB_CLAVE = 'sb_publishable_sl7s4Gp98Aia6-sxrx6exw_6AqXDhpp';
+  var SB_DOMINIO = '@jugadores.gskiomara.es';
+  var sb = null, perfil = null, barra = document.getElementById('cuenta-barra');
+  function normalizarUsuario(t) {
+    return String(t || '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, '.').replace(/[^a-z0-9._-]/g, '');
+  }
+  function iniciarCuentas() {
+    if (!barra || window.claude) return;
+    var sc = document.createElement('script');
+    sc.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js';
+    sc.onload = function () {
+      try { sb = window.supabase.createClient(SB_URL, SB_CLAVE); } catch (e) { return; }
+      barra.hidden = false;
+      sb.auth.getSession().then(function (r) { cargarPerfil(r.data && r.data.session); });
+    };
+    document.head.appendChild(sc);
+  }
+  function cargarPerfil(sesion) {
+    perfil = null; nubeDoc = null;
+    if (!sesion) { pintarBarra(); return; }
+    sb.from('perfiles').select('id, usuario, estado, es_admin').eq('id', sesion.user.id).maybeSingle().then(function (r) {
+      perfil = r.data || null;
+      if (perfil && perfil.estado === 'aprobado') conectarCuenta();
+      pintarBarra();
+    });
+  }
+  function conectarCuenta() {
+    var id = perfil.id;
+    nubeDoc = { set: function (o) { return sb.from('progreso').upsert({ id: id, claves: o.claves, actualizado: new Date().toISOString() }).then(function () {}); } };
+    sb.from('progreso').select('claves').eq('id', id).maybeSingle().then(function (r) {
+      var c = {}; try { c = r.data ? JSON.parse(r.data.claves || '{}') : {}; } catch (e) {}
+      aplicarNube(c);
+    });
+  }
+  function boton(txt, cls, fn) { var b = el('button', 'btn btn-sm ' + (cls || ''), txt); b.type = 'button'; b.addEventListener('click', fn); return b; }
+  function pintarBarra(modo, aviso) {
+    barra.innerHTML = '';
+    var fila = el('div', 'cb-fila');
+    if (!perfil && !modo) {
+      fila.appendChild(el('p', 'cb-txt', 'Ahora tus cromos se guardan solo en este navegador. Con una cuenta no los pierdes al cambiar de móvil.'));
+      var bs = el('div', 'cb-botones');
+      bs.appendChild(boton('Entrar', 'btn--marino', function () { pintarBarra('entrar'); }));
+      bs.appendChild(boton('Pedir cuenta', 'cb-sec', function () { pintarBarra('registro'); }));
+      fila.appendChild(bs);
+    } else if (!perfil) {
+      var reg = modo === 'registro';
+      var f = el('form', 'cb-form'); f.noValidate = true;
+      f.appendChild(el('h3', '', reg ? 'Pedir cuenta' : 'Entrar en tu cuenta'));
+      if (reg) f.appendChild(el('p', 'cb-txt', 'Elige un nombre de usuario y una contraseña. El kraal revisará tu solicitud y, cuando la apruebe, tus cromos se guardarán en tu cuenta.'));
+      var lu = el('label', 'campo', 'Usuario'); var iu = el('input'); iu.name = 'usuario'; iu.autocomplete = 'username'; iu.maxLength = 20; iu.placeholder = 'por ejemplo, lucia.g'; lu.appendChild(iu); f.appendChild(lu);
+      var lc = el('label', 'campo', 'Contraseña'); var ic = el('input'); ic.type = 'password'; ic.name = 'clave'; ic.autocomplete = reg ? 'new-password' : 'current-password'; lc.appendChild(ic); f.appendChild(lc);
+      var ic2 = null;
+      if (reg) { var lc2 = el('label', 'campo', 'Repite la contraseña'); ic2 = el('input'); ic2.type = 'password'; ic2.autocomplete = 'new-password'; lc2.appendChild(ic2); f.appendChild(lc2); }
+      var msg = el('p', 'cb-msg', aviso || ''); msg.setAttribute('aria-live', 'polite'); f.appendChild(msg);
+      var bs2 = el('div', 'cb-botones');
+      var ok = el('button', 'btn btn-sm btn--marino', reg ? 'Enviar solicitud' : 'Entrar'); ok.type = 'submit'; bs2.appendChild(ok);
+      bs2.appendChild(boton('Cancelar', 'cb-sec', function () { pintarBarra(); }));
+      f.appendChild(bs2);
+      f.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var u = normalizarUsuario(iu.value), c = ic.value;
+        if (!/^[a-z0-9._-]{3,20}$/.test(u)) { msg.textContent = 'El usuario debe tener entre 3 y 20 letras o números, sin espacios.'; return; }
+        if (c.length < 6) { msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
+        if (reg && ic2.value !== c) { msg.textContent = 'Las contraseñas no coinciden.'; return; }
+        ok.disabled = true; msg.textContent = reg ? 'Enviando…' : 'Entrando…';
+        var pet = reg ? sb.auth.signUp({ email: u + SB_DOMINIO, password: c, options: { data: { usuario: u } } })
+                      : sb.auth.signInWithPassword({ email: u + SB_DOMINIO, password: c });
+        pet.then(function (r) {
+          ok.disabled = false;
+          if (r.error) {
+            var m = String(r.error.message || '');
+            msg.textContent = /already|registered|exists/i.test(m) ? 'Ese usuario ya existe. Prueba con otro.'
+              : /invalid login|credentials/i.test(m) ? 'Usuario o contraseña incorrectos.'
+              : /rate|too many/i.test(m) ? 'Demasiados intentos. Espera un poco y vuelve a probar.'
+              : 'No se ha podido. Inténtalo de nuevo.';
+            return;
+          }
+          cargarPerfil(r.data && r.data.session);
+        });
+      });
+      fila.appendChild(f);
+      setTimeout(function () { iu.focus(); }, 30);
+    } else {
+      var t = perfil.estado === 'aprobado' ? 'Hola, ' + perfil.usuario + '. Tus cromos se guardan en tu cuenta.'
+        : perfil.estado === 'pendiente' ? 'Hola, ' + perfil.usuario + '. Tu cuenta está pendiente de que el kraal la apruebe. Mientras, tus cromos se guardan en este navegador.'
+        : 'Hola, ' + perfil.usuario + '. Tu solicitud no ha sido aceptada. Si crees que es un error, habla con tus monitores.';
+      fila.appendChild(el('p', 'cb-txt' + (perfil.estado === 'aprobado' ? ' cb-ok' : ''), t));
+      var bs3 = el('div', 'cb-botones');
+      if (perfil.es_admin) bs3.appendChild(boton('Solicitudes', 'btn--marino', function () { abrirAdmin(); }));
+      bs3.appendChild(boton('Salir', 'cb-sec', function () { sb.auth.signOut().then(function () { perfil = null; nubeDoc = null; pintarBarra(); }); }));
+      fila.appendChild(bs3);
+    }
+    barra.appendChild(fila);
+    if (modo === 'admin') barra.appendChild(panelAdmin);
+  }
+  var panelAdmin = el('div', 'cb-admin');
+  function abrirAdmin() {
+    pintarBarra('admin');
+    panelAdmin.innerHTML = '<p class="cb-txt">Cargando…</p>';
+    sb.from('perfiles').select('id, usuario, estado, es_admin, creado').order('creado', { ascending: false }).then(function (r) {
+      panelAdmin.innerHTML = '';
+      var lista = r.data || [];
+      var grupos = [['pendiente', 'Pendientes de aprobar'], ['aprobado', 'Aprobados'], ['rechazado', 'Rechazados']];
+      grupos.forEach(function (g) {
+        var de = lista.filter(function (p) { return p.estado === g[0]; });
+        var h = el('h4', '', g[1] + ' (' + de.length + ')'); panelAdmin.appendChild(h);
+        if (!de.length) { panelAdmin.appendChild(el('p', 'cb-txt', 'Ninguno.')); return; }
+        var ul = el('ul', 'cb-lista');
+        de.forEach(function (p) {
+          var li = el('li'); li.appendChild(el('span', 'cb-usuario', p.usuario + (p.es_admin ? ' (admin)' : '')));
+          var acc = el('span', 'cb-botones');
+          if (p.estado !== 'aprobado') acc.appendChild(boton('Aprobar', 'btn--marino', function () { cambiar(p, 'aprobado'); }));
+          if (p.estado !== 'rechazado' && !p.es_admin) acc.appendChild(boton(p.estado === 'aprobado' ? 'Quitar' : 'Rechazar', 'cb-sec', function () { cambiar(p, 'rechazado'); }));
+          li.appendChild(acc); ul.appendChild(li);
+        });
+        panelAdmin.appendChild(ul);
+      });
+      panelAdmin.appendChild(boton('Cerrar', 'cb-sec', function () { pintarBarra(); }));
+    });
+  }
+  function cambiar(p, estado) { sb.from('perfiles').update({ estado: estado }).eq('id', p.id).then(function () { abrirAdmin(); }); }
+  iniciarCuentas();
 
   // ---- Calendario del primer trimestre ----
   // Para cambiarlo: añade o quita fechas (año-mes-día). Tipos: reunion, acampada, navidad (Gran Boom), no (sábado sin scouts).
