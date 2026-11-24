@@ -1004,6 +1004,10 @@ a { color: inherit; }
 .na-foto { display: flex; gap: 12px; align-items: center; }
 .na-foto img { width: 140px; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; }
 .na-acciones { margin-top: 12px; }
+.adm-desp { border: 2px solid var(--line); border-radius: 14px; padding: 4px 14px; background: #fff; }
+.adm-desp[open] { padding-bottom: 14px; }
+.adm-desp > summary { cursor: pointer; padding: 10px 0; font-weight: 800; color: var(--marino); }
+.adm-desp > * + * { margin-top: 10px; }
 .adm-clave { display: flex; flex-wrap: wrap; gap: 8px; }
 .adm-clave input { font: inherit; padding: 8px 12px; border: 2px solid var(--line); border-radius: 10px; flex: 1 1 200px; }
 .adm-peligro { background: #fff !important; color: #c0392b !important; border: 2px solid #c0392b !important; justify-self: start; }
@@ -5233,8 +5237,9 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     panelAdmin.appendChild(el('h4', '', 'Cuenta: ' + p.usuario));
     var aviso = el('p', 'cb-msg'); aviso.setAttribute('aria-live', 'polite');
     // Cromos
-    panelAdmin.appendChild(el('p', 'cb-txt', 'Pulsa un cromo para dárselo o quitárselo y luego guarda.'));
-    var grid = el('div', 'adm-cromos'); panelAdmin.appendChild(grid);
+    var desp = el('details', 'adm-desp'); var sum = el('summary', '', 'Cromos'); desp.appendChild(sum); panelAdmin.appendChild(desp);
+    desp.appendChild(el('p', 'cb-txt', 'Pulsa un cromo para dárselo o quitárselo y luego guarda.'));
+    var grid = el('div', 'adm-cromos'); desp.appendChild(grid);
     var tiene = {}, original = {}, claves = {};
     sb.from('progreso').select('claves').eq('id', p.id).maybeSingle().then(function (r) {
       try { claves = r.data ? JSON.parse(r.data.claves || '{}') : {}; } catch (e) { claves = {}; }
@@ -5255,8 +5260,9 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
         grid.appendChild(b);
       });
       cuenta.textContent = 'Tiene ' + Object.keys(tiene).length + ' de ' + CROMOS.length + ' cromos.';
+      sum.textContent = 'Cromos (' + Object.keys(tiene).length + ' de ' + CROMOS.length + ')';
     }
-    panelAdmin.appendChild(cuenta);
+    desp.appendChild(cuenta);
     var acc = el('div', 'cb-botones');
     acc.appendChild(boton('Guardar cromos', 'btn--marino', function () {
       var nueva = {}; Object.keys(tiene).forEach(function (k) { nueva[k] = 1; });
@@ -5272,7 +5278,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     }));
     acc.appendChild(boton('Todos', 'cb-sec', function () { CROMOS.forEach(function (c) { tiene[c.id] = 1; }); pintarGrid(); }));
     acc.appendChild(boton('Ninguno', 'cb-sec', function () { tiene = {}; pintarGrid(); }));
-    panelAdmin.appendChild(acc);
+    desp.appendChild(acc);
     // Contraseña
     panelAdmin.appendChild(el('h4', '', 'Cambiar contraseña'));
     var fc = el('div', 'adm-clave');
