@@ -2148,6 +2148,8 @@ main > [data-view]:not([hidden]) { animation: aparece-vista .28s ease-out; }
 img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
 .visor-fondo { position: fixed; inset: 0; z-index: 200; background: rgba(8,12,22,.62); cursor: zoom-out; }
 .visor-copia:focus, .visor-copia:focus-visible { outline: none !important; }
+/* La réplica de contenedores del visor no debe pintar sus decorados (p. ej. la ola de color de las ramas) */
+.visor-replica::before, .visor-replica::after { content: none !important; display: none !important; animation: none !important; }
 .visor-copia { position: fixed !important; z-index: 201 !important; margin: 0 !important; cursor: zoom-out; transition: none !important; transform-origin: 50% 50%; }
 </style>
 
@@ -5776,6 +5778,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     while (pa && pa !== document.body) { cadena.unshift(pa); if (pa.hasAttribute('data-view')) break; pa = pa.parentElement; }
     cadena.forEach(function (el) {
       var c = document.createElement(el.tagName); if (el.className) c.className = el.className;
+      c.classList.add('visor-replica');
       if (el.hasAttribute('data-view')) c.setAttribute('data-view', el.getAttribute('data-view'));
       c.style.setProperty('display', 'contents', 'important');
       if (hoja) hoja.appendChild(c); else raiz = c; hoja = c;
