@@ -5255,6 +5255,20 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
       });
     }));
     panelAdmin.appendChild(fc);
+    // Administrador
+    if (p.id !== perfil.id) {
+      panelAdmin.appendChild(el('h4', '', 'Administrador'));
+      panelAdmin.appendChild(el('p', 'cb-txt', p.es_admin ? p.usuario + ' es administrador: puede aprobar cuentas, gestionar cromos y publicar noticias.' : 'Si lo haces administrador, podrá aprobar cuentas, gestionar cromos y publicar noticias.'));
+      var confA = false, ba = boton(p.es_admin ? 'Quitar administrador' : 'Hacer administrador', p.es_admin ? 'cb-sec' : 'btn--marino', function () {
+        if (!confA) { confA = true; ba.textContent = 'Pulsa otra vez para confirmar'; return; }
+        var datos = p.es_admin ? { es_admin: false } : { es_admin: true, estado: 'aprobado' };
+        sb.from('perfiles').update(datos).eq('id', p.id).then(function (r) {
+          if (r.error) { aviso.textContent = 'No se ha podido cambiar.'; return; }
+          p.es_admin = datos.es_admin; if (datos.estado) p.estado = datos.estado; gestionar(p);
+        });
+      });
+      panelAdmin.appendChild(ba);
+    }
     // Borrar
     if (p.id !== perfil.id) {
       panelAdmin.appendChild(el('h4', '', 'Borrar cuenta'));
