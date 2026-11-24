@@ -5891,8 +5891,11 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     { nombre: 'La web del Kiomara', icono: '💻', color: '#7fd3f7', fecha: 'Otoño 2026',
       texto: 'Diseñamos y construimos la página web del grupo para que familias, scouts y cualquiera que quiera conocernos tenga todo en un mismo sitio.',
       puntos: ['Una página para cada rama, con su equipo, sus fotos y sus avisos', 'Calendario de la ronda y noticias del grupo', 'Minijuego semanal con sobres de cromos coleccionables', 'Álbumes de recuerdos protegidos con contraseña', 'Formulario para apuntarse y toda la información de contacto'] },
+    { nombre: 'Sábados con otras ramas', icono: '🤝', color: '#f9dd3c', fecha: 'Otoño 2026',
+      texto: 'Nos repartimos para pasar los sábados con otras ramas del grupo y hacer de kraal con ellas: una semana unos íbamos a Rangers y otros a Lobatos, y la semana siguiente nos cambiábamos.',
+      puntos: ['Hacer de kraal en Rangers, ayudando a preparar y llevar las actividades', 'Hacer de kraal en Lobatos', 'Cambiarnos a la semana siguiente para vivir las dos ramas', 'Ver el grupo desde el otro lado, como monitores'] }
   ];
-  var SITIOS = [[35, 44, -8], [80, 63, 6], [30, 74, 5], [72, 74, -5], [18, 60, -6], [50, 90, 0], [16, 80, -4], [84, 82, 4]];
+  var SITIOS = [[35, 44, -8], [65, 44, 6], [30, 74, 5], [72, 74, -5], [18, 60, -6], [50, 90, 0], [16, 80, -4], [84, 82, 4]];
   function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x) e.textContent = x; return e; }
   PROYECTOS_RUTAS.forEach(function (p, i) {
     var s = SITIOS[i % SITIOS.length], b = el('button', 'insignia', p.icono || '⭐'); b.type = 'button';
