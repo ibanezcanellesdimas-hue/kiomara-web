@@ -5301,11 +5301,19 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
       acc.appendChild(boton('Editar', 'cb-sec', function () { formNoticia(n); }));
       var conf = false, bb = boton('Borrar', 'adm-peligro', function () {
         if (!conf) { conf = true; bb.textContent = '¿Seguro? Pulsa otra vez'; return; }
-        sb.from('noticias').delete().eq('id', n.id).then(function (r) { if (!r.error) cargarNoticiasNube(); });
+        sb.from('noticias').delete().eq('id', n.id).then(function (r) {
+          if (r.error) return;
+          borrarFoto(n.imagen); cargarNoticiasNube();
+        });
       });
       acc.appendChild(bb);
       (art.querySelector('.noticia-cuerpo') || art).appendChild(acc);
     });
+  }
+  // Al borrar una noticia (o cambiar su foto) se borra también la foto guardada, para no ocupar espacio
+  function borrarFoto(url) {
+    var m = /\/storage\/v1\/object\/public\/noticias\/([^?#]+)/.exec(url || '');
+    if (m) sb.storage.from('noticias').remove([decodeURIComponent(m[1])]);
   }
   function comprimirFoto(file) {
     return new Promise(function (ok, mal) {
@@ -5360,6 +5368,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
       }).then(function (r) {
         ok.disabled = false;
         if (r && r.error) { msg.textContent = 'No se ha podido guardar.'; return; }
+        if (fotoActual && (quitarFoto || (iI.files && iI.files[0]))) borrarFoto(fotoActual);
         zona.innerHTML = ''; cargarNoticiasNube();
       }).catch(function () { ok.disabled = false; msg.textContent = 'No se ha podido subir la foto. Prueba con otra.'; });
     });
