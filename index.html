@@ -965,6 +965,9 @@ a { color: inherit; }
 .mjt-cambio { margin: 2px 0 0; font-size: .92rem; color: var(--muted); text-align: center !important; }
 .mjt-enlace { font: inherit; font-weight: 700; color: var(--marino); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
 .aviso-galleta { position: fixed; left: 16px; bottom: 16px; z-index: 9000; max-width: 380px; display: flex; gap: 12px; align-items: flex-start; background: #fff; border: 2px solid var(--marino); border-radius: 18px; padding: 14px 16px; box-shadow: 0 14px 30px rgba(0,0,0,.25); animation: galleta-entra .4s ease; transition: opacity .3s, transform .3s; }
+.cookies-cab { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.cookies-caracol { width: clamp(140px, 22vw, 240px); height: auto; filter: drop-shadow(0 8px 14px rgba(0,0,0,.25)); transform: rotate(-4deg); }
+@media (max-width: 620px) { .cookies-caracol { margin: 0 auto; } }
 .aviso-galleta.fuera { opacity: 0; transform: translateY(20px); }
 .aviso-galleta img { width: 96px; height: auto; object-fit: contain; flex: none; align-self: center; }
 .aviso-galleta p { margin: 0 0 10px; font-size: .92rem; line-height: 1.45; color: var(--ink, #222); text-align: left !important; hyphens: none !important; }
@@ -3107,10 +3110,13 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
 
 <!-- ===================== COOKIES ===================== -->
 <section data-view="cookies" hidden>
-  <div class="wrap page-head">
-    <span class="eyebrow">Información legal</span>
-    <h1>Política de cookies</h1>
-    <p class="lead">Última actualización: 25 de octubre de 2026.</p>
+  <div class="wrap page-head cookies-cab">
+    <div>
+      <span class="eyebrow">Información legal</span>
+      <h1>Política de cookies</h1>
+      <p class="lead">Última actualización: 24 de noviembre de 2026.</p>
+    </div>
+    <img class="cookies-caracol" src="caracol-galleta.webp" alt="Kiocol, el caracol del grupo, comiéndose una galleta" width="300" height="239">
   </div>
   <div class="wrap legal">
     <h2>Resumen</h2>
