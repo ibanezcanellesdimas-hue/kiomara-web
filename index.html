@@ -3762,13 +3762,15 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
   // Cromos que pueden tocar al resolver el minijuego. Probabilidad de cada rareza:
   var PROB_RAREZA = { legendaria: 1, epico: 9, raro: 20, comun: 70 };
   var NOMBRE_RAREZA = { legendaria: 'Legendaria', epico: 'Épico', raro: 'Raro', comun: 'Común', limitada: 'Edición limitada' };
-  // Ediciones limitadas: solo salen hasta la fecha "hasta" (incluida). "prob" = % de que un cromo del sobre sea de la edición.
+  // Ediciones limitadas: salen desde "desde" (si la tiene) hasta "hasta" (incluidas). "prob" = % de que un cromo del sobre sea de la edición.
   var EDICIONES = {
-    halloween: { nombre: 'Halloween', hasta: '2026-11-30', prob: 15 }
+    halloween: { nombre: 'Halloween', hasta: '2026-12-05', prob: 15 },
+    navidad: { nombre: 'Navidad', desde: '2026-12-06', hasta: '2027-01-06', prob: 15 }
   };
   function edicionActiva(e) {
     var ed = EDICIONES[e]; if (!ed) return false;
     var d = new Date(), h = ed.hasta.split('-');
+    if (ed.desde) { var dd = ed.desde.split('-'); if (d < new Date(+dd[0], +dd[1] - 1, +dd[2])) return false; }
     return d <= new Date(+h[0], +h[1] - 1, +h[2], 23, 59, 59);
   }
   // Un cromo se puede conseguir si es normal o si su edición sigue activa
@@ -3831,7 +3833,24 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     { id: 54, cromo_nombre: 'Sophie Halloween', rareza: 'limitada', edicion: 'halloween', cromo_imagen: 'cromos/54.webp' },
     { id: 55, cromo_nombre: 'Momo Halloween', rareza: 'limitada', edicion: 'halloween', cromo_imagen: 'cromos/55.webp' },
     { id: 56, cromo_nombre: 'Verónica Halloween', rareza: 'limitada', edicion: 'halloween', cromo_imagen: 'cromos/56.webp' },
-    { id: 57, cromo_nombre: 'Giuliana Halloween', rareza: 'limitada', edicion: 'halloween', cromo_imagen: 'cromos/57.webp' }
+    { id: 57, cromo_nombre: 'Giuliana Halloween', rareza: 'limitada', edicion: 'halloween', cromo_imagen: 'cromos/57.webp' },
+    { id: 58, cromo_nombre: 'Talentos caza', rareza: 'epico', cromo_imagen: 'cromos/58.webp' },
+    { id: 59, cromo_nombre: 'Equipo Mario Bros', rareza: 'epico', cromo_imagen: 'cromos/59.webp' },
+    { id: 60, cromo_nombre: 'Alejandro (pioneros)', rareza: 'comun', cromo_imagen: 'cromos/60.webp' },
+    { id: 61, cromo_nombre: 'Dimas calvo', rareza: 'legendaria', cromo_imagen: 'cromos/61.webp' },
+    { id: 62, cromo_nombre: 'Dimas vaquero', rareza: 'raro', cromo_imagen: 'cromos/62.webp' },
+    { id: 63, cromo_nombre: 'Navarrés 2026', rareza: 'raro', cromo_imagen: 'cromos/63.webp' },
+    { id: 64, cromo_nombre: 'Playa Piles 2026', rareza: 'raro', cromo_imagen: 'cromos/64.webp' },
+    { id: 65, cromo_nombre: 'Serra 2024', rareza: 'raro', cromo_imagen: 'cromos/65.webp' },
+    { id: 66, cromo_nombre: 'Calles 2025', rareza: 'raro', cromo_imagen: 'cromos/66.webp' },
+    { id: 67, cromo_nombre: 'Tania Mario Bros', rareza: 'raro', cromo_imagen: 'cromos/67.webp' },
+    { id: 68, cromo_nombre: 'Nuria Waluigi', rareza: 'raro', cromo_imagen: 'cromos/68.webp' },
+    { id: 69, cromo_nombre: 'Matías navideño', rareza: 'limitada', edicion: 'navidad', cromo_imagen: 'cromos/69.webp' },
+    { id: 70, cromo_nombre: 'Abril navideña', rareza: 'limitada', edicion: 'navidad', cromo_imagen: 'cromos/70.webp' },
+    { id: 71, cromo_nombre: 'Ari navideña', rareza: 'limitada', edicion: 'navidad', cromo_imagen: 'cromos/71.webp' },
+    { id: 72, cromo_nombre: 'Diego navideño', rareza: 'limitada', edicion: 'navidad', cromo_imagen: 'cromos/72.webp' },
+    { id: 73, cromo_nombre: 'Tania navideña', rareza: 'limitada', edicion: 'navidad', cromo_imagen: 'cromos/73.webp' },
+    { id: 74, cromo_nombre: 'Riki navideño', rareza: 'limitada', edicion: 'navidad', cromo_imagen: 'cromos/74.webp' }
   ];
   function sacarCromo() {
     // Primero se sortea la rareza (según los porcentajes) y luego un cromo de esa rareza
