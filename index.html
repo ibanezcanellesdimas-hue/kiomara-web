@@ -6015,4 +6015,35 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(mostrar, 1200); }); else setTimeout(mostrar, 1200);
 })();
 </script>
+<style>
+.correo-menu{position:fixed;inset:0;z-index:9999;background:rgba(15,25,45,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+.correo-caja{background:#fff;border-radius:16px;padding:20px;max-width:340px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.3);font-family:inherit}
+.correo-caja h4{margin:0 0 4px;color:var(--marino);font-size:1.1rem}
+.correo-caja p{margin:0 0 14px;color:#666;font-size:.9rem}
+.correo-caja button{display:block;width:100%;margin:0 0 8px;padding:11px 14px;border-radius:10px;border:1.5px solid var(--marino);background:#fff;color:var(--marino);font:inherit;font-weight:600;cursor:pointer;text-align:left}
+.correo-caja button:hover{background:var(--marino);color:#fff}
+.correo-caja .correo-cerrar{border:0;text-align:center;color:#888;font-weight:400;margin:4px 0 0}
+.correo-caja .correo-cerrar:hover{background:none;color:#333}
+</style>
+<script>
+(function(){
+  if (!window.matchMedia || !matchMedia('(pointer:fine)').matches) return; // en móvil, mailto abre la app sin problema
+  function parse(h){var u=h.replace(/^mailto:/,''),q='',i=u.indexOf('?');if(i>=0){q=u.slice(i+1);u=u.slice(0,i);}
+    var p={to:decodeURIComponent(u),su:'',body:''};q.split('&').forEach(function(kv){var k=kv.split('=')[0],v=decodeURIComponent((kv.split('=')[1]||''));if(k==='subject')p.su=v;if(k==='body')p.body=v;});return p;}
+  function abrir(href){
+    var m=parse(href),e=encodeURIComponent,d=document.createElement('div');d.className='correo-menu';
+    d.innerHTML='<div class="correo-caja" role="dialog" aria-label="Enviar email"><h4>¿Con qué correo lo envías?</h4><p>'+m.to+'</p>'+
+      '<button data-c="g">Gmail</button><button data-c="o">Outlook / Hotmail</button><button data-c="a">App de correo del ordenador</button><button data-c="c">Copiar dirección</button>'+
+      '<button class="correo-cerrar" data-c="x">Cancelar</button></div>';
+    d.addEventListener('click',function(ev){var c=ev.target.getAttribute&&ev.target.getAttribute('data-c');if(ev.target===d)c='x';if(!c)return;
+      if(c==='g')window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+e(m.to)+'&su='+e(m.su)+'&body='+e(m.body),'_blank','noopener');
+      if(c==='o')window.open('https://outlook.live.com/mail/0/deeplink/compose?to='+e(m.to)+'&subject='+e(m.su)+'&body='+e(m.body),'_blank','noopener');
+      if(c==='a')location.href=href;
+      if(c==='c'){try{navigator.clipboard.writeText(m.to);ev.target.textContent='¡Copiada!';return;}catch(_){}}
+      d.remove();});
+    document.body.appendChild(d);
+  }
+  document.addEventListener('click',function(ev){var a=ev.target.closest&&ev.target.closest('a[href^="mailto:"]');if(!a)return;ev.preventDefault();abrir(a.getAttribute('href'));},true);
+})();
+</script>
 </body></html>
