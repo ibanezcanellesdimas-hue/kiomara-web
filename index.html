@@ -969,10 +969,19 @@ a { color: inherit; }
 .cb-form input { font: inherit; padding: 10px 12px; border: 2px solid var(--line); border-radius: 10px; width: 100%; }
 .cb-msg { margin: 0; min-height: 1.2em; color: var(--pioneros); font-size: .92rem; }
 .cb-admin { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
-.cb-admin h4 { margin: 8px 0 0; }
+.cb-admin h4 { margin: 8px 0 0; color: var(--marino) !important; }
+.cb-admin .cb-msg { color: var(--marino); font-weight: 700; }
 .cb-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .cb-lista li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; background: var(--surface); border-radius: 10px; }
 .cb-usuario { font-weight: 700; }
+.adm-cromos { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; max-height: 360px; overflow-y: auto; padding: 4px; }
+.adm-cromo { display: grid; gap: 4px; justify-items: center; padding: 6px; border: 2px solid var(--line); border-radius: 10px; background: #fff; cursor: pointer; font: inherit; font-size: .72rem; line-height: 1.15; color: var(--muted); }
+.adm-cromo img { width: 100%; aspect-ratio: 5/7; object-fit: cover; border-radius: 6px; filter: grayscale(1); opacity: .45; }
+.adm-cromo.si { border-color: var(--oliva); color: var(--marino); background: #f3f6e8; }
+.adm-cromo.si img { filter: none; opacity: 1; }
+.adm-clave { display: flex; flex-wrap: wrap; gap: 8px; }
+.adm-clave input { font: inherit; padding: 8px 12px; border: 2px solid var(--line); border-radius: 10px; flex: 1 1 200px; }
+.adm-peligro { background: #fff !important; color: #c0392b !important; border: 2px solid #c0392b !important; justify-self: start; }
 #mj-dentro { display: grid; gap: 56px; }
 #mj-dentro[hidden] { display: none; }
 .mj-cabecera { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px; }
@@ -3703,6 +3712,9 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
       // Se juntan lo de la cuenta y lo de este navegador, sin perder nada de ninguno
       var sem = c[GUARDADO] || {}, crom = c[GUARDADO_CROMOS] || {};
       var antes = JSON.stringify([coleccion, conseguidos, diarioFecha]);
+      // Cromos que un administrador ha quitado de esta cuenta
+      (c['kiomara-admin-quitar'] || []).forEach(function (k) { delete coleccion[k]; delete crom[k]; });
+      if ((c['kiomara-admin-quitar'] || []).length) antes = '';
       Object.keys(crom).forEach(function (k) { coleccion[k] = 1; });
       Object.keys(sem.col || {}).forEach(function (k) { if (sem.col[k]) conseguidos[k] = true; });
       Object.keys(sem.wordle || {}).forEach(function (k) { if (!wordle[k]) wordle[k] = sem.wordle[k]; });
@@ -5155,6 +5167,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
         de.forEach(function (p) {
           var li = el('li'); li.appendChild(el('span', 'cb-usuario', p.usuario + (p.es_admin ? ' (admin)' : '')));
           var acc = el('span', 'cb-botones');
+          acc.appendChild(boton('Gestionar', 'cb-sec', function () { gestionar(p); }));
           if (p.estado !== 'aprobado') acc.appendChild(boton('Aprobar', 'btn--marino', function () { cambiar(p, 'aprobado'); }));
           if (p.estado !== 'rechazado' && !p.es_admin) acc.appendChild(boton(p.estado === 'aprobado' ? 'Quitar' : 'Rechazar', 'cb-sec', function () { cambiar(p, 'rechazado'); }));
           li.appendChild(acc); ul.appendChild(li);
@@ -5163,6 +5176,80 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
       });
       panelAdmin.appendChild(boton('Cerrar', 'cb-sec', function () { pintarBarra(); }));
     });
+  }
+  function gestionar(p) {
+    panelAdmin.innerHTML = '';
+    panelAdmin.appendChild(el('h4', '', 'Cuenta: ' + p.usuario));
+    var aviso = el('p', 'cb-msg'); aviso.setAttribute('aria-live', 'polite');
+    // Cromos
+    panelAdmin.appendChild(el('p', 'cb-txt', 'Pulsa un cromo para dárselo o quitárselo y luego guarda.'));
+    var grid = el('div', 'adm-cromos'); panelAdmin.appendChild(grid);
+    var tiene = {}, original = {}, claves = {};
+    sb.from('progreso').select('claves').eq('id', p.id).maybeSingle().then(function (r) {
+      try { claves = r.data ? JSON.parse(r.data.claves || '{}') : {}; } catch (e) { claves = {}; }
+      var col = claves[GUARDADO_CROMOS] || {};
+      Object.keys(col).forEach(function (k) { tiene[k] = 1; original[k] = 1; });
+      pintarGrid();
+    });
+    var cuenta = el('p', 'cb-txt');
+    function pintarGrid() {
+      grid.innerHTML = '';
+      CROMOS.forEach(function (c) {
+        var b = el('button', 'adm-cromo' + (tiene[c.id] ? ' si' : '')); b.type = 'button';
+        b.title = c.cromo_nombre + ' (' + (NOMBRE_RAREZA[c.rareza] || c.rareza) + ')';
+        b.setAttribute('aria-pressed', tiene[c.id] ? 'true' : 'false');
+        var im = el('img'); im.src = c.cromo_imagen; im.alt = ''; im.loading = 'lazy'; b.appendChild(im);
+        b.appendChild(el('span', '', c.cromo_nombre));
+        b.addEventListener('click', function () { if (tiene[c.id]) delete tiene[c.id]; else tiene[c.id] = 1; pintarGrid(); });
+        grid.appendChild(b);
+      });
+      cuenta.textContent = 'Tiene ' + Object.keys(tiene).length + ' de ' + CROMOS.length + ' cromos.';
+    }
+    panelAdmin.appendChild(cuenta);
+    var acc = el('div', 'cb-botones');
+    acc.appendChild(boton('Guardar cromos', 'btn--marino', function () {
+      var nueva = {}; Object.keys(tiene).forEach(function (k) { nueva[k] = 1; });
+      var quitar = (claves['kiomara-admin-quitar'] || []).concat(Object.keys(original)).filter(function (k, i, arr) { return !tiene[k] && arr.indexOf(k) === i; });
+      claves[GUARDADO_CROMOS] = nueva; if (quitar.length) claves['kiomara-admin-quitar'] = quitar; else delete claves['kiomara-admin-quitar'];
+      aviso.textContent = 'Guardando…';
+      sb.from('progreso').upsert({ id: p.id, claves: JSON.stringify(claves), actualizado: new Date().toISOString() }).then(function (r) {
+        if (r.error) { aviso.textContent = 'No se ha podido guardar.'; return; }
+        original = {}; Object.keys(nueva).forEach(function (k) { original[k] = 1; });
+        aviso.textContent = 'Cromos guardados.';
+        if (p.id === perfil.id) { aplicarNube(claves); }
+      });
+    }));
+    acc.appendChild(boton('Todos', 'cb-sec', function () { CROMOS.forEach(function (c) { tiene[c.id] = 1; }); pintarGrid(); }));
+    acc.appendChild(boton('Ninguno', 'cb-sec', function () { tiene = {}; pintarGrid(); }));
+    panelAdmin.appendChild(acc);
+    // Contraseña
+    panelAdmin.appendChild(el('h4', '', 'Cambiar contraseña'));
+    var fc = el('div', 'adm-clave');
+    var ic = el('input'); ic.type = 'text'; ic.autocomplete = 'off'; ic.placeholder = 'Nueva contraseña (mín. 6)';
+    fc.appendChild(ic);
+    fc.appendChild(boton('Cambiar', 'btn--marino', function () {
+      if (ic.value.length < 6) { aviso.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
+      aviso.textContent = 'Cambiando…';
+      sb.rpc('admin_cambiar_clave', { p_id: p.id, p_clave: ic.value }).then(function (r) {
+        aviso.textContent = r.error ? 'No se ha podido cambiar.' : 'Contraseña cambiada. Díselo a ' + p.usuario + '.';
+        if (!r.error) ic.value = '';
+      });
+    }));
+    panelAdmin.appendChild(fc);
+    // Borrar
+    if (p.id !== perfil.id) {
+      panelAdmin.appendChild(el('h4', '', 'Borrar cuenta'));
+      var conf = false, bb = boton('Borrar cuenta', 'adm-peligro', function () {
+        if (!conf) { conf = true; bb.textContent = 'Pulsa otra vez para borrarla del todo'; return; }
+        sb.rpc('admin_borrar_cuenta', { p_id: p.id }).then(function (r) {
+          if (r.error) { aviso.textContent = 'No se ha podido borrar.'; return; }
+          abrirAdmin();
+        });
+      });
+      panelAdmin.appendChild(bb);
+    }
+    panelAdmin.appendChild(aviso);
+    panelAdmin.appendChild(boton('← Volver a la lista', 'cb-sec', function () { abrirAdmin(); }));
   }
   function cambiar(p, estado) { sb.from('perfiles').update({ estado: estado }).eq('id', p.id).then(function () { abrirAdmin(); }); }
   iniciarCuentas();
