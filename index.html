@@ -966,7 +966,7 @@ a { color: inherit; }
 .mjt-enlace { font: inherit; font-weight: 700; color: var(--marino); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
 .aviso-galleta { position: fixed; left: 16px; bottom: 16px; z-index: 9000; max-width: 380px; display: flex; gap: 12px; align-items: flex-start; background: #fff; border: 2px solid var(--marino); border-radius: 18px; padding: 14px 16px; box-shadow: 0 14px 30px rgba(0,0,0,.25); animation: galleta-entra .4s ease; transition: opacity .3s, transform .3s; }
 .aviso-galleta.fuera { opacity: 0; transform: translateY(20px); }
-.aviso-galleta img { width: 64px; height: 64px; object-fit: contain; flex: none; }
+.aviso-galleta img { width: 96px; height: auto; object-fit: contain; flex: none; align-self: center; }
 .aviso-galleta p { margin: 0 0 10px; font-size: .92rem; line-height: 1.45; color: var(--ink, #222); text-align: left !important; hyphens: none !important; }
 @keyframes galleta-entra { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
 @media (max-width: 480px) { .aviso-galleta { left: 12px; right: 12px; bottom: 12px; max-width: none; } }
@@ -6000,8 +6000,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
   try { if (localStorage.getItem(CLAVE)) return; } catch (e) {}
   function mostrar() {
     var a = document.createElement('div'); a.className = 'aviso-galleta'; a.setAttribute('role', 'region'); a.setAttribute('aria-label', 'Aviso sobre cookies');
-    // Cuando tengamos el caracol con la galleta, cambiar la imagen aquí
-    a.innerHTML = '<img src="caracol.webp" alt="" width="64" height="64"><div><p><strong>¿Una cookie?</strong> Esta web solo guarda en tu navegador lo necesario para funcionar, como tus cromos y tu sesión. Sin publicidad ni seguimiento. <a href="#cookies">Más información</a></p><button type="button" class="btn btn-sm btn--marino">Entendido</button></div>';
+    a.innerHTML = '<img src="caracol-galleta.webp" alt="" width="96" height="76"><div><p><strong>¿Una cookie?</strong> Esta web solo guarda en tu navegador lo necesario para funcionar, como tus cromos y tu sesión. Sin publicidad ni seguimiento. <a href="#cookies">Más información</a></p><button type="button" class="btn btn-sm btn--marino">Entendido</button></div>';
     a.querySelector('button').addEventListener('click', function () { try { localStorage.setItem(CLAVE, '1'); } catch (e) {} a.classList.add('fuera'); setTimeout(function () { a.remove(); }, 300); });
     a.querySelector('a').addEventListener('click', function () { try { localStorage.setItem(CLAVE, '1'); } catch (e) {} a.remove(); });
     document.body.appendChild(a);
