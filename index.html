@@ -981,6 +981,16 @@ a { color: inherit; }
 .adm-cromo img { width: 100%; aspect-ratio: 5/7; object-fit: cover; border-radius: 6px; filter: grayscale(1); opacity: .45; }
 .adm-cromo.si { border-color: var(--oliva); color: var(--marino); background: #f3f6e8; }
 .adm-cromo.si img { filter: none; opacity: 1; }
+.noticias-admin { max-width: 820px; margin-bottom: 18px; }
+.noticias-admin:empty { display: none; }
+.na-form { display: grid; gap: 10px; background: #fff; border: 2px dashed var(--line); border-radius: 18px; padding: 20px; }
+.na-form h3 { margin: 0; color: var(--marino) !important; }
+.na-form input[type=text], .na-form input[type=date], .na-form select, .na-form textarea { font: inherit; font-weight: 400; padding: 10px 12px; border: 2px solid var(--line); border-radius: 12px; width: 100%; background: #fbfbf7; }
+.na-form textarea { resize: vertical; }
+.na-check { display: flex; gap: 8px; align-items: center; font-weight: 700; color: var(--marino); }
+.na-foto { display: flex; gap: 12px; align-items: center; }
+.na-foto img { width: 140px; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; }
+.na-acciones { margin-top: 12px; }
 .adm-clave { display: flex; flex-wrap: wrap; gap: 8px; }
 .adm-clave input { font: inherit; padding: 8px 12px; border: 2px solid var(--line); border-radius: 10px; flex: 1 1 200px; }
 .adm-peligro { background: #fff !important; color: #c0392b !important; border: 2px solid #c0392b !important; justify-self: start; }
@@ -3115,6 +3125,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     <p class="lead">Avisos, salidas, campamentos y comunicados para las familias. Lo más reciente sale primero.</p>
   </div>
   <div class="wrap" style="padding-bottom:64px">
+    <div class="noticias-admin" id="noticias-admin"></div>
     <div class="noticias-lista" id="lista-noticias"></div>
   </div>
 </section>
@@ -3580,6 +3591,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
   }
   function tarjeta(n, completa) {
     var art = el('article', 'noticia' + (/^s[ií]/i.test(n.destacada || '') ? ' noticia--destacada' : ''));
+    if (n.id && completa) art.dataset.id = n.id;
     if (n.imagen) { var img = el('img', 'noticia-img'); img.src = n.imagen; img.alt = ''; img.loading = 'lazy'; art.appendChild(img); }
     var cuerpo = el('div', 'noticia-cuerpo');
     var t = el('time', 'noticia-fecha', fechaBonita(n._fecha) || n.fecha);
@@ -3598,6 +3610,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     art.appendChild(cuerpo);
     return art;
   }
+  var noticiasActuales = [];
   function pintarNoticias(lista) {
     lista = lista.filter(function (n) { return n.titulo; }).map(function (n) { n._fecha = aFecha(n.fecha); return n; })
       .sort(function (a, b) { return (b._fecha || 0) - (a._fecha || 0); });
@@ -3620,6 +3633,8 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
       if (!suyas.length) caja.appendChild(el('p', 'noticias-vacio', 'Ahora mismo no hay avisos para esta rama. Los generales están en Noticias.'));
       suyas.forEach(function (n) { caja.appendChild(tarjeta(n, true)); });
     });
+    noticiasActuales = lista;
+    if (typeof decorarNoticias === 'function') decorarNoticias();
   }
   // ¿La noticia es para alguna de estas ramas? (columna "rama"; "todas" vale para cualquiera)
   function deRamas(n, ramas) {
@@ -5041,6 +5056,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     sc.onerror = function () { pintarTarjeta('error'); };
     sc.onload = function () {
       try { sb = window.supabase.createClient(SB_URL, SB_CLAVE); } catch (e) { return; }
+      cargarNoticiasNube();
       sb.auth.getSession().then(function (r) { cargarPerfil(r.data && r.data.session); });
     };
     document.head.appendChild(sc);
@@ -5063,7 +5079,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     });
   }
   function boton(txt, cls, fn) { var b = el('button', 'btn btn-sm ' + (cls || ''), txt); b.type = 'button'; b.addEventListener('click', fn); return b; }
-  var capa = document.getElementById('mj-capa'), tarjeta = document.getElementById('mj-tarjeta');
+  var capa = document.getElementById('mj-capa'), mjTarjeta = document.getElementById('mj-tarjeta');
   function campo(txt, tipo, auto, extra) {
     var l = el('label', 'mjt-campo'); l.appendChild(el('span', '', txt));
     var i = el('input'); i.type = tipo; i.autocomplete = auto; if (extra) extra(i);
@@ -5081,29 +5097,29 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     caja.appendChild(ojo); l.appendChild(caja); return [l, i];
   }
   function pintarTarjeta(modo, aviso) {
-    tarjeta.innerHTML = '';
+    mjTarjeta.innerHTML = '';
     var cab = el('div', 'mjt-cab');
     var img = el('img'); img.src = 'caracol.webp'; img.alt = ''; img.width = 96; img.height = 96; cab.appendChild(img);
-    tarjeta.appendChild(cab);
+    mjTarjeta.appendChild(cab);
     if (modo === 'cargando' || modo === 'error') {
-      tarjeta.appendChild(el('h2', '', modo === 'error' ? 'Ups…' : 'Un momento…'));
-      tarjeta.appendChild(el('p', 'mjt-txt', modo === 'error' ? 'No se ha podido conectar. Recarga la página para volver a intentarlo.' : 'Preparando el minijuego.'));
+      mjTarjeta.appendChild(el('h2', '', modo === 'error' ? 'Ups…' : 'Un momento…'));
+      mjTarjeta.appendChild(el('p', 'mjt-txt', modo === 'error' ? 'No se ha podido conectar. Recarga la página para volver a intentarlo.' : 'Preparando el minijuego.'));
       return;
     }
     if (perfil) {
       var pend = perfil.estado === 'pendiente';
-      tarjeta.appendChild(el('h2', '', pend ? '¡Solicitud enviada!' : 'Cuenta no aceptada'));
-      tarjeta.appendChild(el('p', 'mjt-txt', pend ? 'Hola, ' + perfil.usuario + '. El kraal tiene que aprobar tu cuenta. En cuanto lo haga, podrás jugar y guardar tus cromos.'
+      mjTarjeta.appendChild(el('h2', '', pend ? '¡Solicitud enviada!' : 'Cuenta no aceptada'));
+      mjTarjeta.appendChild(el('p', 'mjt-txt', pend ? 'Hola, ' + perfil.usuario + '. El kraal tiene que aprobar tu cuenta. En cuanto lo haga, podrás jugar y guardar tus cromos.'
         : 'Hola, ' + perfil.usuario + '. Tu solicitud no ha sido aceptada. Si crees que es un error, habla con tus monitores.'));
       var bs = el('div', 'mjt-botones');
       if (pend) bs.appendChild(boton('Comprobar de nuevo', 'btn--marino', function () { sb.auth.getSession().then(function (r) { cargarPerfil(r.data && r.data.session); }); }));
       bs.appendChild(boton('Salir', 'cb-sec', function () { sb.auth.signOut().then(function () { perfil = null; nubeDoc = null; cerrarJuego(true); pintarBarra(); }); }));
-      tarjeta.appendChild(bs);
+      mjTarjeta.appendChild(bs);
       return;
     }
     var reg = modo === 'registro';
-    tarjeta.appendChild(el('h2', '', reg ? 'Pide tu cuenta' : 'Entra para jugar'));
-    tarjeta.appendChild(el('p', 'mjt-txt', reg ? 'Es tu primera vez: elige un usuario y una contraseña. El kraal revisará tu solicitud.' : 'Pon tu usuario y tu contraseña para jugar y guardar tus cromos.'));
+    mjTarjeta.appendChild(el('h2', '', reg ? 'Pide tu cuenta' : 'Entra para jugar'));
+    mjTarjeta.appendChild(el('p', 'mjt-txt', reg ? 'Es tu primera vez: elige un usuario y una contraseña. El kraal revisará tu solicitud.' : 'Pon tu usuario y tu contraseña para jugar y guardar tus cromos.'));
     var f = el('form', 'mjt-form'); f.noValidate = true;
     var cu = campo('Usuario', 'text', 'username', function (i) { i.maxLength = 20; i.placeholder = reg ? 'por ejemplo, lucia.g' : ''; i.autocapitalize = 'none'; i.spellcheck = false; }); f.appendChild(cu[0]);
     var cc = campo('Contraseña', 'password', reg ? 'new-password' : 'current-password'); f.appendChild(cc[0]);
@@ -5132,14 +5148,15 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
         cargarPerfil(r.data && r.data.session);
       });
     });
-    tarjeta.appendChild(f);
+    mjTarjeta.appendChild(f);
     var cambio = el('p', 'mjt-cambio');
     cambio.appendChild(document.createTextNode(reg ? '¿Ya tienes cuenta? ' : '¿Es tu primera vez? '));
     var a = el('button', 'mjt-enlace', reg ? 'Entra' : 'Pide tu cuenta'); a.type = 'button';
     a.addEventListener('click', function () { pintarTarjeta(reg ? 'entrar' : 'registro'); });
-    cambio.appendChild(a); tarjeta.appendChild(cambio);
+    cambio.appendChild(a); mjTarjeta.appendChild(cambio);
   }
   function pintarBarra(modo, aviso) {
+    decorarNoticias();
     var dentro = perfil && perfil.estado === 'aprobado';
     capa.hidden = dentro; barra.hidden = !dentro;
     if (!dentro) { pintarTarjeta(modo, aviso); return; }
@@ -5254,6 +5271,102 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     panelAdmin.appendChild(boton('← Volver a la lista', 'cb-sec', function () { abrirAdmin(); }));
   }
   function cambiar(p, estado) { sb.from('perfiles').update({ estado: estado }).eq('id', p.id).then(function () { abrirAdmin(); }); }
+
+  // ---- Noticias desde la base de datos: los administradores las publican desde la web ----
+  var RAMAS_NOTICIA = [['todas', 'Todo el grupo'], ['lobatos', 'Lobatos'], ['rangers', 'Rangers'], ['pioneros', 'Pioneros'], ['rutas', 'Rutas'], ['kraal', 'Kraal']];
+  function cargarNoticiasNube() {
+    if (!sb) return;
+    sb.from('noticias').select('*').order('fecha', { ascending: false }).then(function (r) {
+      if (r.error || !r.data) return;
+      pintarNoticias(r.data.map(function (n) {
+        var f = (n.fecha || '').split('-');
+        return { id: n.id, fecha: f.length === 3 ? f[2] + '/' + f[1] + '/' + f[0] : '', _iso: n.fecha, rama: n.rama, titulo: n.titulo, resumen: n.resumen, texto: n.texto, imagen: n.imagen, destacada: n.destacada ? 'si' : 'no' };
+      }));
+    });
+  }
+  function esAdmin() { return !!(sb && perfil && perfil.es_admin && perfil.estado === 'aprobado'); }
+  function decorarNoticias() {
+    var lista = document.getElementById('lista-noticias'); if (!lista) return;
+    var zona = document.getElementById('noticias-admin');
+    if (!esAdmin()) {
+      if (zona) zona.innerHTML = '';
+      [].forEach.call(lista.querySelectorAll('.na-acciones'), function (a) { a.remove(); });
+      return;
+    }
+    if (zona && !zona.firstChild) zona.appendChild(boton('+ Nueva noticia', 'btn--marino na-nueva', function () { formNoticia(null); }));
+    [].forEach.call(lista.querySelectorAll('article.noticia[data-id]'), function (art) {
+      if (art.querySelector('.na-acciones')) return;
+      var n = noticiasActuales.filter(function (x) { return x.id === art.dataset.id; })[0]; if (!n) return;
+      var acc = el('div', 'na-acciones cb-botones');
+      acc.appendChild(boton('Editar', 'cb-sec', function () { formNoticia(n); }));
+      var conf = false, bb = boton('Borrar', 'adm-peligro', function () {
+        if (!conf) { conf = true; bb.textContent = '¿Seguro? Pulsa otra vez'; return; }
+        sb.from('noticias').delete().eq('id', n.id).then(function (r) { if (!r.error) cargarNoticiasNube(); });
+      });
+      acc.appendChild(bb);
+      (art.querySelector('.noticia-cuerpo') || art).appendChild(acc);
+    });
+  }
+  function comprimirFoto(file) {
+    return new Promise(function (ok, mal) {
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        var max = 1600, w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, max / Math.max(w, h));
+        var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.toBlob(function (b) { b ? ok(b) : mal(new Error('foto')); }, 'image/webp', 0.82);
+      };
+      img.onerror = function () { mal(new Error('foto')); }; img.src = url;
+    });
+  }
+  function formNoticia(n) {
+    var zona = document.getElementById('noticias-admin'); if (!zona) return;
+    zona.innerHTML = '';
+    var f = el('form', 'na-form'); f.noValidate = true;
+    f.appendChild(el('h3', '', n ? 'Editar noticia' : 'Nueva noticia'));
+    function fila(txt, campoEl) { var l = el('label', 'mjt-campo'); l.appendChild(el('span', '', txt)); l.appendChild(campoEl); f.appendChild(l); return campoEl; }
+    var hoyIso = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    var iF = el('input'); iF.type = 'date'; iF.value = (n && n._iso) || hoyIso; fila('Fecha', iF);
+    var iR = el('select'); RAMAS_NOTICIA.forEach(function (r) { var o = el('option', '', r[1]); o.value = r[0]; iR.appendChild(o); }); iR.value = (n && n.rama) || 'todas'; fila('Para quién', iR);
+    var iT = el('input'); iT.type = 'text'; iT.maxLength = 140; iT.value = (n && n.titulo) || ''; fila('Título', iT);
+    var iS = el('textarea'); iS.rows = 2; iS.value = (n && n.resumen) || ''; fila('Resumen (lo que se ve en la tarjeta)', iS);
+    var iX = el('textarea'); iX.rows = 6; iX.value = (n && n.texto) || ''; fila('Texto completo (opcional; deja una línea en blanco entre párrafos)', iX);
+    var iI = el('input'); iI.type = 'file'; iI.accept = 'image/*'; fila('Foto (opcional)', iI);
+    var fotoActual = (n && n.imagen) || '', quitarFoto = false;
+    if (fotoActual) {
+      var pf = el('div', 'na-foto'); var im = el('img'); im.src = fotoActual; im.alt = ''; pf.appendChild(im);
+      pf.appendChild(boton('Quitar foto', 'cb-sec', function () { quitarFoto = true; pf.remove(); })); f.appendChild(pf);
+    }
+    var lD = el('label', 'na-check'); var iD = el('input'); iD.type = 'checkbox'; iD.checked = !!(n && /^s/i.test(n.destacada || '')); lD.appendChild(iD); lD.appendChild(document.createTextNode(' Destacada (sale resaltada)')); f.appendChild(lD);
+    var msg = el('p', 'cb-msg'); msg.setAttribute('aria-live', 'polite'); f.appendChild(msg);
+    var bs = el('div', 'cb-botones');
+    var ok = el('button', 'btn btn-sm btn--marino', n ? 'Guardar cambios' : 'Publicar'); ok.type = 'submit'; bs.appendChild(ok);
+    bs.appendChild(boton('Cancelar', 'cb-sec', function () { zona.innerHTML = ''; decorarNoticias(); }));
+    f.appendChild(bs);
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!iT.value.trim()) { msg.textContent = 'Pon un título.'; iT.focus(); return; }
+      if (!iS.value.trim()) { msg.textContent = 'Pon un resumen corto.'; iS.focus(); return; }
+      ok.disabled = true; msg.textContent = 'Guardando…';
+      var subir = iI.files && iI.files[0] ? comprimirFoto(iI.files[0]).then(function (b) {
+        var ruta = Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.webp';
+        return sb.storage.from('noticias').upload(ruta, b, { contentType: 'image/webp' }).then(function (r) {
+          if (r.error) throw r.error; return sb.storage.from('noticias').getPublicUrl(ruta).data.publicUrl;
+        });
+      }) : Promise.resolve(quitarFoto ? '' : fotoActual);
+      subir.then(function (urlFoto) {
+        var datos = { fecha: iF.value || hoyIso, rama: iR.value, titulo: iT.value.trim(), resumen: iS.value.trim(), texto: iX.value.trim(), imagen: urlFoto || '', destacada: iD.checked };
+        return n ? sb.from('noticias').update(datos).eq('id', n.id) : sb.from('noticias').insert(datos);
+      }).then(function (r) {
+        ok.disabled = false;
+        if (r && r.error) { msg.textContent = 'No se ha podido guardar.'; return; }
+        zona.innerHTML = ''; cargarNoticiasNube();
+      }).catch(function () { ok.disabled = false; msg.textContent = 'No se ha podido subir la foto. Prueba con otra.'; });
+    });
+    zona.appendChild(f);
+    zona.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    iT.focus({ preventScroll: true });
+  }
   iniciarCuentas();
 
   // ---- Calendario del primer trimestre ----
