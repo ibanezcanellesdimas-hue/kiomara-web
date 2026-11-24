@@ -5987,6 +5987,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     a.href = 'mailto:gscoutkiomara@gmail.com?subject=' + encodeURIComponent('Duda para ' + c) + '&body=' + encodeURIComponent(cuerpo);
   }
   f.addEventListener('input', act); f.addEventListener('change', act); f.addEventListener('submit', function (e) { e.preventDefault(); });
+  act(); a.addEventListener('pointerdown', act); a.addEventListener('focus', act);
   var cp = document.getElementById('com-copiar');
   if (cp) cp.addEventListener('click', function () {
     if (!f.duda.value.trim()) { f.duda.focus(); f.duda.style.borderColor = 'var(--pioneros)'; return; }
@@ -6043,7 +6044,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
       d.remove();});
     document.body.appendChild(d);
   }
-  document.addEventListener('click',function(ev){var a=ev.target.closest&&ev.target.closest('a[href^="mailto:"]');if(!a)return;ev.preventDefault();abrir(a.getAttribute('href'));},true);
+  document.addEventListener('click',function(ev){var a=ev.target.closest&&ev.target.closest('a[href^="mailto:"]');if(!a)return;ev.preventDefault();if(a.classList.contains('desactivado'))return;abrir(a.getAttribute('href'));},true);
 })();
 </script>
 </body></html>
