@@ -320,7 +320,7 @@ a { color: inherit; }
 .baloo-ficha { position: absolute; right: -5%; top: -110px; width: clamp(200px, 20vw, 255px); height: auto; transform: rotate(3deg); z-index: 2; pointer-events: none; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25)); }
 [data-view="lobatos"] .rama-equipo-bloque, [data-view="rutas"] .rama-equipo-bloque, [data-view="pioneros"] .rama-equipo-bloque { padding-top: 0; }
 [data-view="lobatos"] { overflow-x: clip; }
-.pata-zona { text-align: center; margin: 26px auto 0; position: relative; will-change: transform; }
+.pata-zona { text-align: center; margin: 26px auto 0; }
 .pata-grande { display: block; width: min(92%, 420px); height: auto; margin: 0 auto; overflow: visible; }
 .pata-dedo { cursor: pointer; outline: none; }
 .pata-dedo .pata-oval, .pata-dedo use { transition: transform .25s ease; transform-box: fill-box; transform-origin: center; }
@@ -6075,7 +6075,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
   var svg = document.querySelector('.pata-grande'); if (!svg) return;
   var D = [{"col": "#3d7a34", "sil": "pantera", "nom": "Bagheera", "tipo": "La pantera", "txt": "Pantera negra, ágil y astuta. En El libro de la selva fue quien defendió a Mowgli para que la manada lo aceptara. Nos enseña a ser valientes y a pensar antes de actuar."}, {"col": "#b39a12", "sil": "oso", "nom": "Baloo", "tipo": "El oso", "txt": "El oso sabio que enseña la Ley de la Selva a los lobatos. Paciente y bonachón, nos recuerda que aprender juntos es lo más importante."}, {"col": "#b3202f", "sil": "serpiente", "nom": "Kaa", "tipo": "La serpiente", "txt": "La gran pitón, vieja y sabia. Rescató a Mowgli cuando los monos Bandar-log se lo llevaron. Nos enseña a observar con calma y a usar la cabeza."}, {"col": "#0d2d5c", "sil": "lobo", "nom": "Hermano Gris", "tipo": "El lobo", "txt": "El hermano lobo de Mowgli, de su misma camada. Siempre a su lado, nos enseña a ser buenos compañeros dentro de la manada."}], velo, carta, dedoAct;
   function sil(k) { return '<svg viewBox="0 0 512 512" aria-hidden="true"><use href="#sil-' + k + '"/></svg>'; }
-  var zona = svg.closest('.pata-zona'), ocupado = false;
+  var zona = svg.closest('.rama-pagina') || svg.closest('.pata-zona'), ocupado = false;
   function abrir(g) {
     if (carta || ocupado) return;
     ocupado = true; dedoAct = g;
@@ -6090,7 +6090,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     var cx = r.left + r.width / 2, cy = r.top + r.height / 2, k = h / r.height;
     // la cámara se acerca al dedo
     zona.style.transformOrigin = (cx - z.left) + 'px ' + (cy - z.top) + 'px';
-    zona.style.zIndex = '50'; zona.style.transition = 'transform .75s cubic-bezier(.5,0,.2,1)';
+    document.documentElement.style.overflowX = 'hidden'; zona.style.transition = 'transform .75s cubic-bezier(.5,0,.2,1)';
     zona.style.transform = 'translate(' + (innerWidth / 2 - cx) + 'px,' + (innerHeight / 2 - cy) + 'px) scale(' + k + ')';
     setTimeout(function () {
       var r2 = oval.getBoundingClientRect();
@@ -6115,7 +6115,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     carta = velo = null;
     c.classList.remove('vuelta'); v.classList.remove('si');
     setTimeout(function () { c.remove(); v.remove(); g.classList.remove('abierto'); zona.style.transform = ''; }, 800);
-    setTimeout(function () { zona.style.transition = ''; zona.style.zIndex = ''; ocupado = false; g.focus({ preventScroll: true }); }, 1600);
+    setTimeout(function () { zona.style.transition = ''; zona.style.transformOrigin = ''; document.documentElement.style.overflowX = ''; ocupado = false; g.focus({ preventScroll: true }); }, 1600);
   }
   svg.querySelectorAll('.pata-dedo').forEach(function (g) {
     g.addEventListener('click', function () { abrir(g); });
