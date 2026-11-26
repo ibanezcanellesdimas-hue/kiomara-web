@@ -6125,26 +6125,14 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     setTimeout(function () { c.remove(); v.remove(); g.classList.remove('abierto'); zona.style.transform = ''; }, 800);
     setTimeout(function () { zona.style.transition = ''; zona.style.transformOrigin = ''; document.documentElement.style.overflowX = ''; ocupado = false; g.focus({ preventScroll: true }); }, 1600);
   }
-  var ctx, aullando = false, alm = svg.querySelector('.pata-almohadilla');
+  var aullando = false, alm = svg.querySelector('.pata-almohadilla'), sonido = null;
   function aullido() {
     if (aullando) return;
-    try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
-    if (ctx.state === 'suspended') ctx.resume();
+    sonido = sonido || new Audio('sonidos/aullido-lobo.mp3');
+    sonido.currentTime = 0;
+    var p = sonido.play(); if (p && p.catch) p.catch(function () {});
     aullando = true; alm.classList.add('aulla');
-    var t = ctx.currentTime + 0.05, D = 2.8, out = ctx.createGain(), bp = ctx.createBiquadFilter(), lp = ctx.createBiquadFilter();
-    bp.type = 'bandpass'; bp.frequency.value = 900; bp.Q.value = 0.9; lp.type = 'lowpass'; lp.frequency.value = 2400;
-    out.gain.setValueAtTime(0, t); out.gain.linearRampToValueAtTime(0.32, t + 0.35); out.gain.setValueAtTime(0.32, t + D - 0.9); out.gain.exponentialRampToValueAtTime(0.001, t + D);
-    bp.connect(lp); lp.connect(out); out.connect(ctx.destination);
-    var vib = ctx.createOscillator(), vibG = ctx.createGain(); vib.frequency.value = 5.2; vibG.gain.setValueAtTime(0, t); vibG.gain.linearRampToValueAtTime(9, t + 1.2); vib.connect(vibG);
-    [[1, 0.6, 'sawtooth'], [2, 0.18, 'sine'], [1.005, 0.25, 'triangle']].forEach(function (p) {
-      var o = ctx.createOscillator(), g = ctx.createGain(); o.type = p[2]; g.gain.value = p[1];
-      var f = o.frequency; f.setValueAtTime(330 * p[0], t); f.exponentialRampToValueAtTime(560 * p[0], t + 0.7); f.setValueAtTime(560 * p[0], t + 1.6); f.exponentialRampToValueAtTime(380 * p[0], t + D);
-      vibG.connect(f); o.connect(g); g.connect(bp); o.start(t); o.stop(t + D + 0.05);
-    });
-    var n = ctx.createBuffer(1, ctx.sampleRate * D, ctx.sampleRate), dd = n.getChannelData(0); for (var i = 0; i < dd.length; i++) dd[i] = (Math.random() * 2 - 1) * 0.05;
-    var ns = ctx.createBufferSource(); ns.buffer = n; ns.connect(bp); ns.start(t);
-    vib.start(t); vib.stop(t + D + 0.05);
-    setTimeout(function () { aullando = false; alm.classList.remove('aulla'); }, (D + 0.2) * 1000);
+    setTimeout(function () { aullando = false; alm.classList.remove('aulla'); }, 2500);
   }
   if (alm) { alm.addEventListener('click', aullido); alm.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); aullido(); } }); }
   svg.querySelectorAll('.pata-dedo').forEach(function (g) {
