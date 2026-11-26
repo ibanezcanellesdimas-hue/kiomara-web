@@ -336,12 +336,12 @@ a { color: inherit; }
 .pata-cara { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; align-items: center; justify-content: center; }
 .pata-cara--frente { border-radius: 50%; background: var(--col); box-shadow: 0 18px 40px rgba(0,0,0,.35); }
 .pata-cara--frente svg { width: 78%; height: 78%; fill: #fff; }
-.pata-cara--dorso { transform: rotateY(180deg); border-radius: 22px; background: #fffdf6; border: 6px solid var(--col); box-shadow: 0 18px 40px rgba(0,0,0,.35); flex-direction: column; padding: 24px 22px; text-align: center; gap: 10px; }
-.pata-cara--dorso svg { width: 84px; height: 84px; fill: var(--col); }
+.pata-cara--dorso { transform: rotateY(180deg); border-radius: 50%; background: #fffdf6; border: 7px solid var(--col); box-shadow: 0 18px 40px rgba(0,0,0,.35); flex-direction: column; padding: 16% 15% 14%; text-align: center; gap: 6px; }
+.pata-cara--dorso svg { width: 58px; height: 58px; flex: none; fill: var(--col); }
 .pata-cara--dorso .pata-tipo { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--col); margin: 0; }
-.pata-cara--dorso h3 { margin: 0; font-size: 1.6rem; color: var(--marino); }
-.pata-cara--dorso p.pata-txt { margin: 0; font-size: .98rem; line-height: 1.45; color: #333; }
-.pata-cerrar { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--col); color: #fff; font-size: 1.1rem; cursor: pointer; }
+.pata-cara--dorso h3 { margin: 0; font-size: 1.4rem; color: var(--marino); }
+.pata-cara--dorso p.pata-txt { margin: 0; text-align: center; font-size: .88rem; line-height: 1.4; color: #333; hyphens: none; }
+.pata-cerrar { position: absolute; bottom: 4%; left: 50%; margin-left: -17px; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--col); color: #fff; font-size: 1.1rem; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .pata-carta, .pata-carta-in { transition: none; } }
 .bagheera-zona { position: relative; width: min(80%, 340px); margin: 0 auto -40px; }
 .bagheera-linea { position: absolute; left: -100vw; right: -100vw; top: 81%; height: 34px; margin-top: -2px; background: var(--lobatos); box-shadow: 0 3px 0 rgba(27,42,74,0.12); }
