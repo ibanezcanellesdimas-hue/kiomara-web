@@ -6128,11 +6128,11 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
   var aullando = false, alm = svg.querySelector('.pata-almohadilla'), sonido = null;
   function aullido() {
     if (aullando) return;
-    sonido = sonido || new Audio('sonidos/aullido-lobo.mp3');
+    sonido = sonido || new Audio('sonidos/aullido.mp3');
     sonido.currentTime = 0;
     var p = sonido.play(); if (p && p.catch) p.catch(function () {});
     aullando = true; alm.classList.add('aulla');
-    setTimeout(function () { aullando = false; alm.classList.remove('aulla'); }, 2500);
+    setTimeout(function () { aullando = false; alm.classList.remove('aulla'); }, 3000);
   }
   if (alm) { alm.addEventListener('click', aullido); alm.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); aullido(); } }); }
   svg.querySelectorAll('.pata-dedo').forEach(function (g) {
