@@ -384,7 +384,7 @@ a { color: inherit; }
 @keyframes muro-mece { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(4deg); } 60% { transform: rotate(-3deg); } }
 .muro-nombre { margin-top: 8px; padding: 3px 10px 4px; border-radius: 6px; background: #e2c79a; color: #4a3015; font-family: var(--f-mano); font-weight: 700; font-size: 1.05rem; white-space: nowrap; line-height: 1.1; transform: rotate(-3deg); box-shadow: 0 3px 6px rgba(60,35,10,.2); }
 .muro-libre .muro-hueco { margin-top: calc(-6px - 12%); font-size: .95rem !important; width: 72%; aspect-ratio: 1 / 4.2; border: 2px dashed #cfc5ad; border-radius: 999px 999px 14px 14px; writing-mode: vertical-rl; display: grid; place-items: center; font-family: var(--f-mano); font-weight: 700; font-size: 1.15rem; color: #a89878; text-align: center; padding: 8px; }
-@media (max-width: 620px) { .muro-lista { justify-content: center; } .muro-libre:last-child { display: none; } }
+@media (max-width: 620px) { .muro-lista { justify-content: center; gap: 28px 56px; } .muro-libre:last-child { display: none; } }
 @media (prefers-reduced-motion: reduce) { .muro-item:hover .muro-panoleta { animation: none; } }
 /* Rutas: camisa con las insignias de los proyectos */
 .camisa-intro { max-width: 52ch; }
@@ -2760,7 +2760,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     <div class="muro">
       <div class="muro-madera" aria-hidden="true"></div>
       <ul class="muro-lista">
-        <li class="muro-item"><span class="muro-clavo" aria-hidden="true"></span><img class="muro-panoleta" src="fotos/panoleta.webp" alt="Pañoleta de Nombre" width="320" height="1069" loading="lazy"><span class="muro-nombre">Nombre</span></li>
+        <li class="muro-item"><span class="muro-clavo" aria-hidden="true"></span><img class="muro-panoleta" src="fotos/panoleta-2.webp" alt="Pañoleta de Nombre" width="320" height="1235" loading="lazy"><span class="muro-nombre">Nombre</span></li>
         <li class="muro-item muro-libre" aria-hidden="true"><span class="muro-clavo"></span><span class="muro-hueco">¿La próxima?</span></li>
         <li class="muro-item muro-libre" aria-hidden="true"><span class="muro-clavo"></span><span class="muro-hueco">¿La próxima?</span></li>
       </ul>
