@@ -459,6 +459,7 @@ a { color: inherit; }
 .faro-boton img { position: relative; z-index: 2; display: block; width: 100%; height: auto; filter: drop-shadow(0 10px 16px rgba(120,20,20,.3)); }
 .faro-boton:hover { transform: scale(1.04); }
 .faro-boton:focus-visible { outline: 4px solid var(--pioneros); outline-offset: 6px; }
+html, body, [data-view] { overflow-x: clip; }
 .faro-luz { position: absolute; z-index: 1; left: 50%; top: 38%; width: 340%; aspect-ratio: 1; transform: translate(-50%, -50%) rotate(0deg); border-radius: 50%; opacity: 0; pointer-events: none;
   background: conic-gradient(from -14deg, rgba(255,220,90,.55), rgba(255,220,90,0) 28deg, rgba(255,220,90,0) 180deg, rgba(255,220,90,.55) 194deg, rgba(255,220,90,0) 222deg, rgba(255,220,90,0) 360deg);
   -webkit-mask: radial-gradient(circle, #000 18%, transparent 70%); mask: radial-gradient(circle, #000 18%, transparent 70%); transition: opacity .5s ease; }
