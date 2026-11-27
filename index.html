@@ -649,10 +649,11 @@ html, body, [data-view] { overflow-x: clip; }
 }
 .caracol--colina .bocadillo--mini { background: var(--on-marino); color: var(--marino); }
 .caracol--colina .bocadillo--mini::after { border-top-color: var(--on-marino); }
-/* En móvil la foto queda justo encima del caracol: el bocadillo sale a su derecha, sobre las colinas */
+/* En móvil la foto queda justo encima del caracol: el bocadillo sale a su izquierda, sobre las colinas */
+.montes.montes--arriba { z-index: 3; }
 @media (max-width: 760px) {
-  .caracol--colina .bocadillo--mini { bottom: auto; top: 30%; left: calc(100% + 12px); transform: translateY(-50%); }
-  .caracol--colina .bocadillo--mini::after { left: -9px; top: 50%; bottom: auto; margin: -9px 0 0; border: 9px solid transparent; border-left: 0; border-right-color: var(--on-marino); }
+  .caracol--colina .bocadillo--mini { bottom: auto; top: 30%; left: auto; right: calc(100% + 12px); transform: translateY(-50%); width: max-content; max-width: min(46vw, 190px); white-space: normal; text-align: center; }
+  .caracol--colina .bocadillo--mini::after { left: auto; right: -9px; top: 50%; bottom: auto; margin: -9px 0 0; border: 9px solid transparent; border-right: 0; border-left-color: var(--on-marino); }
 }
 .caracol--colina .caracol { filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35)); animation: paseo 3.2s ease-in-out infinite; transition: transform .2s ease; }
 .caracol--colina:hover .caracol { transform: rotate(-6deg) scale(1.06); }
@@ -5689,9 +5690,9 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     colina.addEventListener('click', function () {
       bocaColina.textContent = frases[nFrase++ % frases.length];
       bocaColina.hidden = false;
-      colina.classList.remove('salta'); void colina.offsetWidth; colina.classList.add('salta');
+      colina.classList.remove('salta'); void colina.offsetWidth; colina.classList.add('salta'); if (colina.parentElement) colina.parentElement.classList.add('montes--arriba');
       clearTimeout(tColina);
-      tColina = setTimeout(function () { bocaColina.hidden = true; colina.classList.remove('salta'); }, 2200);
+      tColina = setTimeout(function () { bocaColina.hidden = true; colina.classList.remove('salta'); if (colina.parentElement) colina.parentElement.classList.remove('montes--arriba'); }, 2200);
     });
   }
 
