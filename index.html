@@ -460,6 +460,7 @@ a { color: inherit; }
 .faro-boton:hover { transform: scale(1.04); }
 .faro-boton:focus-visible { outline: 4px solid var(--pioneros); outline-offset: 6px; }
 html, body, [data-view] { overflow-x: clip; }
+@supports not (overflow: clip) { body, [data-view] { overflow-x: hidden; } }
 .faro-luz { position: absolute; z-index: 1; left: 50%; top: 38%; width: 340%; aspect-ratio: 1; transform: translate(-50%, -50%) rotate(0deg); border-radius: 50%; opacity: 0; pointer-events: none;
   background: conic-gradient(from -14deg, rgba(255,220,90,.55), rgba(255,220,90,0) 28deg, rgba(255,220,90,0) 180deg, rgba(255,220,90,.55) 194deg, rgba(255,220,90,0) 222deg, rgba(255,220,90,0) 360deg);
   -webkit-mask: radial-gradient(circle, #000 18%, transparent 70%); mask: radial-gradient(circle, #000 18%, transparent 70%); transition: opacity .5s ease; }
@@ -3426,6 +3427,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
       window.scrollTo(0, 0);
     }
   }
+  try { var vp = document.querySelector('meta[name=viewport]'); if (vp && !/minimum-scale/.test(vp.content)) vp.setAttribute('content', vp.content + ',minimum-scale=1'); } catch (e) {}
   window.addEventListener('hashchange', mostrar);
   try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
   mostrar();
