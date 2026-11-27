@@ -652,7 +652,7 @@ html, body, [data-view] { overflow-x: clip; }
 /* En móvil la foto queda justo encima del caracol: el bocadillo sale a su izquierda, sobre las colinas */
 .montes.montes--arriba { z-index: 3; }
 @media (max-width: 760px) {
-  .caracol--colina .bocadillo--mini { bottom: auto; top: 30%; left: auto; right: calc(100% + 12px); transform: translateY(-50%); width: max-content; max-width: min(46vw, 190px); white-space: normal; text-align: center; }
+  .caracol--colina .bocadillo--mini { bottom: auto; top: 30%; left: auto; right: calc(100% + 12px); transform: translateY(-50%); width: max-content; max-width: min(calc(50vw - 70px), 190px); white-space: normal; text-align: center; line-height: 1.2; }
   .caracol--colina .bocadillo--mini::after { left: auto; right: -9px; top: 50%; bottom: auto; margin: -9px 0 0; border: 9px solid transparent; border-right: 0; border-left-color: var(--on-marino); }
 }
 .caracol--colina .caracol { filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35)); animation: paseo 3.2s ease-in-out infinite; transition: transform .2s ease; }
