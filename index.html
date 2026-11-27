@@ -425,8 +425,8 @@ a { color: inherit; }
 .insignia:hover, .insignia:focus-visible, .insignia.activa { transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(1.18); outline: none; }
 .insignia.libre { background: rgba(255,255,255,.12); box-shadow: none; border: 2px dashed rgba(255,255,255,.75); cursor: default; font-size: .62rem; font-weight: 800; color: #fff; text-align: center; padding: 4px; }
 .insignia.libre::after { display: none; }
-.insignia.gira { animation: insignia-gira .7s cubic-bezier(.3,.7,.3,1); }
-@keyframes insignia-gira { from { transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(1.18) rotateY(0); } to { transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(1.18) rotateY(720deg); } }
+.insignia.gira { animation: insignia-gira .9s cubic-bezier(.35,.6,.3,1); will-change: transform; backface-visibility: hidden; }
+@keyframes insignia-gira { from { transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(1.18) rotateY(0); } to { transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(1.18) rotateY(360deg); } }
 .camisa-panel { display: grid; grid-template-rows: 0fr; opacity: 0; margin-top: 0; transition: grid-template-rows .45s ease, opacity .35s ease, margin .35s ease; }
 .camisa-panel > * { min-height: 0; }
 .camisa-panel.abierto { grid-template-rows: auto; opacity: 1; margin-top: 16px; background: #fff; border-radius: 16px; padding: 18px 20px; box-shadow: 0 10px 26px rgba(27,42,74,.12); border-top: 6px solid var(--rutas); animation: panel-entra .45s ease; }
