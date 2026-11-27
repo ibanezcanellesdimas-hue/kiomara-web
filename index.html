@@ -3426,7 +3426,10 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
     }
   }
   window.addEventListener('hashchange', mostrar);
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
   mostrar();
+  window.addEventListener('load', function () { if (!anclas[(location.hash || '').slice(1)]) window.scrollTo(0, 0); });
+  window.addEventListener('pageshow', function (e) { if (e.persisted && !anclas[(location.hash || '').slice(1)]) window.scrollTo(0, 0); });
 
   menuBtn.addEventListener('click', function () {
     var abierto = nav.classList.toggle('open');
