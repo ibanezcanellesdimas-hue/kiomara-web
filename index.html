@@ -3428,7 +3428,12 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
   window.addEventListener('hashchange', mostrar);
   try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
   mostrar();
-  window.addEventListener('load', function () { if (!anclas[(location.hash || '').slice(1)]) window.scrollTo(0, 0); });
+  (function () {
+    var tocado = false;
+    ['touchstart', 'wheel', 'keydown', 'mousedown'].forEach(function (t) { window.addEventListener(t, function () { tocado = true; }, { once: true, passive: true }); });
+    function arriba() { if (!tocado && !anclas[(location.hash || '').slice(1)] && window.scrollY > 0) window.scrollTo(0, 0); }
+    window.addEventListener('load', function () { arriba(); [60, 250, 600, 1200].forEach(function (ms) { setTimeout(arriba, ms); }); });
+  })();
   window.addEventListener('pageshow', function (e) { if (e.persisted && !anclas[(location.hash || '').slice(1)]) window.scrollTo(0, 0); });
 
   menuBtn.addEventListener('click', function () {
