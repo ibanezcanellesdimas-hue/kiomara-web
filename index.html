@@ -385,7 +385,8 @@ a { color: inherit; }
 @keyframes muro-mece { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(4deg); } 60% { transform: rotate(-3deg); } }
 .muro-nombre { margin-top: 8px; padding: 3px 10px 4px; border-radius: 6px; background: #e2c79a; color: #4a3015; font-family: var(--f-mano); font-weight: 700; font-size: 1.05rem; white-space: nowrap; line-height: 1.1; transform: rotate(-3deg); box-shadow: 0 3px 6px rgba(60,35,10,.2); }
 .muro-libre .muro-hueco { margin-top: calc(-6px - 12%); font-size: .95rem !important; width: 72%; aspect-ratio: 1 / 4.2; border: 2px dashed #cfc5ad; border-radius: 999px 999px 14px 14px; writing-mode: vertical-rl; display: grid; place-items: center; font-family: var(--f-mano); font-weight: 700; font-size: 1.15rem; color: #a89878; text-align: center; padding: 8px; }
-@media (max-width: 620px) { .muro-lista { justify-content: center; gap: 28px 56px; } .muro-libre:last-child { display: none; } }
+@media (max-width: 380px) { .muro-item { width: 54px; } }
+@media (max-width: 620px) { .muro-lista { justify-content: space-around; gap: 28px 10px; } .muro-libre:last-child { display: none; } }
 @media (prefers-reduced-motion: reduce) { .muro-item:hover .muro-panoleta { animation: none; } }
 /* Rutas: camisa con las insignias de los proyectos */
 .camisa-intro { max-width: 52ch; }
@@ -2500,7 +2501,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
   <div class="wrap stack-lg rama-equipo-bloque">
     <div class="stack"><span class="eyebrow">Monitores</span><h2>Nuestro equipo</h2></div>
     <div class="rama-galeria rama-equipo">
-      <figure class="polaroid" style="--giro:-2deg"><img class="foto" src="fotos/lobatos-leire.webp" alt="Leire (Hathi), monitora de Lobatos" width="600" height="600" loading="lazy" style="aspect-ratio:1"><img class="sticker" src="fotos/elefante-sticker.webp" alt="" width="310" height="380" loading="lazy" style="width:44%"><figcaption>Hathi (Leire)</figcaption></figure>
+      <figure class="polaroid" style="--giro:-2deg"><img class="foto" src="fotos/lobatos-leire-2.webp" alt="Leire (Hathi), monitora de Lobatos" width="600" height="600" loading="lazy" style="aspect-ratio:1"><img class="sticker" src="fotos/elefante-sticker.webp" alt="" width="310" height="380" loading="lazy" style="width:44%"><figcaption>Hathi (Leire)</figcaption></figure>
       <div class="equipo-lobo">
       <figure class="polaroid" style="--giro:1.5deg"><img class="foto" src="fotos/lobatos-riki-3.webp" alt="Riki (Hermano Gris), monitor de Lobatos" width="600" height="600" loading="lazy" style="aspect-ratio:1"><img class="sticker" src="fotos/lobo-sticker.webp" alt="" width="360" height="304" loading="lazy"><figcaption>Hermano Gris (Riki)</figcaption></figure>
       </div>
@@ -2766,6 +2767,7 @@ img.foto, video.foto, img.noticia-img { cursor: zoom-in; }
         <li class="muro-item"><span class="muro-clavo" aria-hidden="true"></span><img class="muro-panoleta" src="fotos/panoleta-2.webp" alt="Pañoleta de Tania" width="320" height="1235" loading="lazy" style="left:20%"><span class="muro-nombre">Tania</span></li>
         <li class="muro-item"><span class="muro-clavo" aria-hidden="true"></span><img class="muro-panoleta" src="fotos/panoleta-nuria-3.webp" alt="Pañoleta de Nuria" width="320" height="1281" loading="lazy" style="left:-7.5%"><span class="muro-nombre">Nuria</span></li>
         <li class="muro-item"><span class="muro-clavo" aria-hidden="true"></span><img class="muro-panoleta" src="fotos/panoleta-fabian.webp" alt="Pañoleta de Fabián" width="320" height="1258" loading="lazy" style="left:-1%"><span class="muro-nombre">Fabián</span></li>
+        <li class="muro-item"><span class="muro-clavo" aria-hidden="true"></span><img class="muro-panoleta" src="fotos/panoleta-leire.webp" alt="Pañoleta de Leire" width="320" height="1423" loading="lazy" style="left:-1%"><span class="muro-nombre">Leire</span></li>
         <li class="muro-item muro-libre" aria-hidden="true"><span class="muro-clavo"></span><span class="muro-hueco">¿La próxima?</span></li>
       </ul>
     </div>
